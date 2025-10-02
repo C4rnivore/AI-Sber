@@ -9,5 +9,7 @@ pyvenv.cfg
 
 # Model Files
 /hf_model
+/nanai_lora
 /share
+/data_nan_2_ru
 
