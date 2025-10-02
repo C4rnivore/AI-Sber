@@ -6,7 +6,7 @@ from peft import LoraConfig, get_peft_model, TaskType
 
 # --- Параметры ---
 MODEL_ID = "Helsinki-NLP/opus-mt-ru-en"
-DATA_PATH = "data_nan_2_ru/data.json"
+DATA_PATH = "dataset.json"
 CACHE_DIR = "hf_model"
 OUTPUT_DIR = "./nanai_lora"
 BATCH_SIZE = 4
@@ -17,14 +17,26 @@ LEARNING_RATE = 5e-4
 print("[INFO] Загружаем датасет...")
 dataset = load_dataset("json", data_files=DATA_PATH, split="train")
 
+split_dataset = dataset.train_test_split(test_size=0.1, seed=42, shuffle=True)  # 10% на валидацию
+train_dataset = split_dataset["train"]
+val_dataset = split_dataset["test"]
+
 # --- 2. Токенизация ---
 print("[INFO] Токенизация...")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, legacy=False, cache_dir=CACHE_DIR)
 
-def tokenize(batch):
-    return tokenizer(batch["original"], text_target=batch["translation"], truncation=True, padding=True)
 
-tokenized_dataset = dataset.map(tokenize, batched=True)
+def tokenize(batch):
+    return tokenizer(
+        batch["source"],
+        text_target=batch["translation"],
+        truncation=True,     # <-- обрезка длинных текстов
+        padding="max_length", # <-- паддинг до max_length
+        max_length=128        # <-- можно выбрать подходящую длину
+    )
+
+tokenized_train = train_dataset.map(tokenize, batched=True)
+tokenized_val = val_dataset.map(tokenize, batched=True)
 
 # --- 3. Загружаем модель и подключаем LoRA ---
 print("[INFO] Инициализация модели...")
@@ -60,7 +72,8 @@ training_args = Seq2SeqTrainingArguments(
 trainer = Seq2SeqTrainer(
     model=model,
     args=training_args,
-    train_dataset=tokenized_dataset,
+    train_dataset=tokenized_train,
+    eval_dataset=tokenized_val, 
     tokenizer=tokenizer,
 )
 
