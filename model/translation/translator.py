@@ -10,7 +10,7 @@ load_dotenv()
 HUGGING_FACE_API_TOKEN = os.getenv("HUGGING_FACE_API_TOKEN")
 _MODEL_ID = "facebook/mbart-large-50-many-to-many-mmt"
 _CACHE_DIR = "hf_model"
-_LORA_DIR = "./nanai_lora"
+_LORA_DIR = "models/core-model"
 
 _translator = None
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

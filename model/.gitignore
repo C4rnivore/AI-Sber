@@ -1,3 +1,7 @@
+.idea/
+.vscode/
+finetuning/__pycache__/
+
 # Virtual environment
 /Include
 /Lib
@@ -8,8 +12,10 @@ pyvenv.cfg
 .env
 
 # Model Files
-/hf_model
-/nanai_lora
+/models/hf
+/models/ft
 /share
-/data_nan_2_ru
+
+# Configs
+/finetuning/finetune_cfg.yaml
 
