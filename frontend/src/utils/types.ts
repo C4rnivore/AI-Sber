@@ -1,0 +1,1 @@
+export type NavigationTabs = "translator" | "favorites" | "history";
