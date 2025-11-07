@@ -4,19 +4,20 @@ from dotenv import load_dotenv
 from huggingface_hub import hf_hub_download
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from peft import PeftModel
+from typing import Literal
 
 load_dotenv()
 
 HUGGING_FACE_API_TOKEN = os.getenv("HUGGING_FACE_API_TOKEN")
 _MODEL_ID = "facebook/mbart-large-50-many-to-many-mmt"
-_CACHE_DIR = "hf_model"
-_LORA_DIR = "models/core-model"
+_CACHE_DIR = "models/core"
+_LORA_DIR = "models/core/loras"
 
 _translator = None
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def get_translator(lora_model_dir):
+def get_translator(tgt_lng: Literal["russian", "nanai"] = "russian"):
     """
     Возвращает объект Translator.
     Загружает модель и LoRA, если они ещё не загружены.
@@ -25,16 +26,18 @@ def get_translator(lora_model_dir):
 
     if _translator is None:
         # Загружаем базовую модель
+        lora_path = _LORA_DIR + '/nani_lora' if tgt_lng == 'nanai' else _LORA_DIR + '/nanai_lora_reverse'
+
         if not is_loaded():
             print("[INFO] Модель не загружена. Скачиваем...")
             load_model()
 
         print("[INFO] Загружаем базовую модель и LoRA...")
         base_model = AutoModelForSeq2SeqLM.from_pretrained(_MODEL_ID, cache_dir=_CACHE_DIR)
-        model_with_lora = PeftModel.from_pretrained(base_model, lora_model_dir)
+        model_with_lora = PeftModel.from_pretrained(base_model, lora_path)
         model_with_lora.to(_device)
 
-        tokenizer = AutoTokenizer.from_pretrained(lora_model_dir)
+        tokenizer = AutoTokenizer.from_pretrained(lora_path)
 
         # Создаём обёртку Translator
         _translator = Translator(model_with_lora, tokenizer, _device)
