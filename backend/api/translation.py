@@ -14,7 +14,7 @@ router = APIRouter(prefix="/translation", tags=["Translation"])
 async def get_russian_translation(
         nani_text: str,
 ) -> BaseModelRead:
-    translator = get_translator()
+    translator = get_translator("nanai")
     translation_rus = translator(nani_text)
     if not translation_rus.exists():
         raise NotFoundException(detail="Failed to translate")
@@ -28,7 +28,7 @@ async def get_russian_translation(
 async def get_nani_translation(
         russian_text: str,
 ) -> BaseModelRead:
-    translator = get_translator()
+    translator = get_translator("russian")
     translation_nani = translator(russian_text)
     if not translation_nani.exists():
         raise NotFoundException(detail="Failed to translate")
