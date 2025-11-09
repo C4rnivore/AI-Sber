@@ -1,8 +1,10 @@
-.idea/
+/.idea
 .vscode/
 finetuning/__pycache__/
+translation/__pycache__/
 
 # Virtual environment
+/venv
 /Include
 /Lib
 /Scripts
@@ -15,6 +17,7 @@ pyvenv.cfg
 /models/hf
 /models/ft
 /share
+/nanai_lora
 
 # Configs
 /finetuning/finetune_cfg.yaml
