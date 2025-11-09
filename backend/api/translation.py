@@ -2,34 +2,34 @@ from fastapi import APIRouter
 
 from backend.api.base import NotFoundException
 from backend.schems.base import BaseModelRead
-from model.translation.translator import get_translator
+from model.translation.translator import Translator
 
 router = APIRouter(prefix="/translation", tags=["Translation"])
 
 @router.get(
     "/{translation_russian}",
     response_model=BaseModelRead,
-    summary="Get russian translation by nani language",
+    summary="Get russian translation by nanai language",
 )
 async def get_russian_translation(
-        nani_text: str,
+        nanai_text: str,
 ) -> BaseModelRead:
-    translator = get_translator("nanai")
-    translation_rus = translator(nani_text)
-    if not translation_rus.exists():
+    translator = Translator(target_language="nanai")
+    translation_rus = translator.translate(nanai_text)
+    if not translation_rus:
         raise NotFoundException(detail="Failed to translate")
     return BaseModelRead.model_validate(translation_rus)
 
 @router.get(
-    "/{translation_nani}",
+    "/{translation_nanai}",
     response_model=BaseModelRead,
-    summary="Get nani translation by russian language",
+    summary="Get nanai translation by russian language",
 )
-async def get_nani_translation(
+async def get_nanai_translation(
         russian_text: str,
 ) -> BaseModelRead:
-    translator = get_translator("russian")
-    translation_nani = translator(russian_text)
-    if not translation_nani.exists():
+    translator = Translator(target_language="russian")
+    translation_nanai = translator.translate(russian_text)
+    if not translation_nanai:
         raise NotFoundException(detail="Failed to translate")
-    return BaseModelRead.model_validate(translation_nani)
+    return BaseModelRead.model_validate(translation_nanai)
