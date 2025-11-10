@@ -2,8 +2,10 @@
 
 import CopyIcon from "@/icons/CopyIcon";
 import SpeakerIcon from "@/icons/SpeakerIcon";
-import { useEffect, useRef, useCallback, TextareaHTMLAttributes } from "react";
+import { useEffect, useRef, useCallback, TextareaHTMLAttributes, useState } from "react";
 import Button from "./Button";
+import { motion } from "motion/react";
+
 
 interface TextAreaProps
   extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
@@ -85,6 +87,7 @@ export default function TextArea({
 
   const currentLength = value?.length || 0;
   const isNearLimit = maxLength && currentLength >= maxLength * 0.9;
+  const [showTooltip, setShowTooltip] = useState(false)
 
   return (
     <div className="relative w-full ">
@@ -98,14 +101,28 @@ export default function TextArea({
         {...props}
       />
       {copy && (
-        <Button
-          className="absolute bottom-[1.111vw] left-[1.111vw] size-[1.806vw]"
-          onClick={() => {
-            navigator.clipboard.writeText(value);
-          }}
-        >
-          <CopyIcon />
-        </Button>
+          <Button
+            className="absolute bottom-[1.111vw] left-[1.111vw] size-[1.806vw]"
+            onClick={() => {
+              setShowTooltip(true);
+              navigator.clipboard.writeText(value);
+              setTimeout(() => {
+                setShowTooltip(false);
+              }, 500);
+            }}
+          >
+            <motion.div 
+              initial={{opacity:0}}
+              animate={{
+                opacity: showTooltip ? 1 : 0,
+                y: showTooltip ? "-10%" : 0
+              }} 
+              className="absolute px-[1.111vw] top-[-100%] left-1/2 -translate-x-1/2"
+            >
+              Скопировано
+            </motion.div>
+            <CopyIcon />
+          </Button>
       )}
       {tts && (
         <Button
