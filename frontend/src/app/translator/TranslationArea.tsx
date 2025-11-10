@@ -1,15 +1,23 @@
 import TextArea from "@/components/ui/TextArea";
 import React, { useEffect, useState } from "react";
 import useDebouncedValue from "@/hooks/useDebouncedValue";
+import useTranslationStore from "@/hooks/useTranslationStore";
+import axios from "axios";
 
 export default function TranslationArea() {
-  const [originalText, setOriginalText] = useState("");
-  const [translatedText, setTranslatedText] = useState("");
-  const [height1, setHeight1] = useState<number>(0);
-  const [height2, setHeight2] = useState<number>(0);
-  const [syncHeight, setSyncHeight] = useState<number>(0);
-
+  const {
+    translateTo,
+    originalText,
+    setOriginalText,
+    translatedText,
+    setTranslatedText,
+  } = useTranslationStore();
   const debouncedOriginal = useDebouncedValue(originalText, 500) as string;
+  const buildUrl = () => {
+    const prefix = translateTo === "nanai" ? "to-nanai" : "to-russian";
+    const field = translateTo === "nanai" ? "russian_text" : "nanai_text";
+    return `http://localhost:3001/translation/${prefix}?${field}=${debouncedOriginal}`;
+  };
 
   useEffect(() => {
     if (debouncedOriginal === "") {
@@ -17,15 +25,21 @@ export default function TranslationArea() {
       return;
     }
 
-    setTranslatedText("Уже переводим...");
-    const api = setTimeout(() => {
-      setTranslatedText(`[Типо перевод] ${debouncedOriginal} [Типо перевод]`);
-    }, 1200);
+    // Чтоб лишний раз не дергать бэк
+    if (debouncedOriginal === originalText && translatedText !== "") {
+      return;
+    }
 
-    return () => {
-      clearTimeout(api);
-    };
+    axios.get(buildUrl()).then((response) => {
+      setTranslatedText(response.data.text_to_translated);
+      setOriginalText(debouncedOriginal);
+    });
   }, [debouncedOriginal]);
+
+  // Синхронизация высоты текстовых полей
+  const [syncHeight, setSyncHeight] = useState<number>(0);
+  const [height1, setHeight1] = useState<number>(0);
+  const [height2, setHeight2] = useState<number>(0);
 
   useEffect(() => {
     setSyncHeight(Math.max(height1, height2));

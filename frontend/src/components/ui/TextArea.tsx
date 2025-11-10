@@ -101,7 +101,7 @@ export default function TextArea({
         <Button
           className="absolute bottom-[1.111vw] left-[1.111vw] size-[1.806vw]"
           onClick={() => {
-            console.log("Copy");
+            navigator.clipboard.writeText(value);
           }}
         >
           <CopyIcon />

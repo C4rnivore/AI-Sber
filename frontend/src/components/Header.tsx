@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "./ui/Button";
 import useNavigationStore from "@/hooks/useNavigationStore";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import clsx from "clsx";
 import ChatIcon from "@/icons/ChatIcon";
 import FavoritesIcon from "@/icons/FavoritesIcon";
@@ -13,11 +12,10 @@ import HistroyIcon from "@/icons/HistroyIcon";
 export default function Header() {
   const router = useRouter();
   const { navigationTab, setNavigationTab } = useNavigationStore();
-  const { setValue } = useLocalStorage();
 
   useEffect(() => {
     router.push(`/${navigationTab}`);
-    setValue("lastNavigationTab", navigationTab);
+    setNavigationTab(navigationTab);
   }, [navigationTab]);
 
   return (

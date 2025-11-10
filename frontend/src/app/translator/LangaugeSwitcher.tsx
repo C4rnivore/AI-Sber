@@ -3,7 +3,7 @@ import SwitchIcon from "@/icons/SwitchIcon";
 
 interface LanguageSwitcherProps {
   activeTargetLanguage: "nanai" | "russian";
-  onChange: () => void;
+  onChange: (lang: "nanai" | "russian") => void;
 }
 
 const LanguageSwitcher = ({
@@ -17,7 +17,9 @@ const LanguageSwitcher = ({
       </div>
 
       <Button
-        onClick={onChange}
+        onClick={() =>
+          onChange(activeTargetLanguage === "nanai" ? "russian" : "nanai")
+        }
         className="size-[2.5vw] items-center justify-center bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F]"
       >
         <div className="w-[1.25vw] h-[1.667vw]">
