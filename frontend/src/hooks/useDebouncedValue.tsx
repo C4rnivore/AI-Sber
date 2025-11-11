@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 
+/**
+ * Хук для debounce значения
+ * @param value - значение
+ * @param delay - задержка
+ * @returns debounced значение
+ */
 function useDebouncedValue(value: unknown, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 

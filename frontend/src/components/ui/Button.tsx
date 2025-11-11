@@ -1,13 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-
-interface ButtonProps {
-  children?: React.ReactNode;
-  onClick: () => void;
-  className?: string;
-  active?: boolean;
-  disabled?: boolean;
-}
+import { ButtonProps } from "@/utils/interfaces";
 
 export default function Button({
   children,

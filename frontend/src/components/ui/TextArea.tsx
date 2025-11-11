@@ -2,26 +2,13 @@
 
 import CopyIcon from "@/icons/CopyIcon";
 import SpeakerIcon from "@/icons/SpeakerIcon";
-import { useEffect, useRef, useCallback, TextareaHTMLAttributes, useState } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import Button from "./Button";
 import { motion } from "motion/react";
-
-
-interface TextAreaProps
-  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
-  value?: string;
-  onChange?: (value: string) => void;
-  placeholder?: string;
-  maxLength?: number;
-  minRows?: number;
-  maxRows?: number;
-  className?: string;
-  showCharCount?: boolean;
-  syncHeight?: number;
-  copy?: boolean;
-  tts?: boolean;
-  onHeightChange?: (height: number) => void;
-}
+import HeartIcon from "@/icons/HeartIcon";
+import HeartEmptyIcon from "@/icons/HeartEmptyIcon";
+import { TextAreaProps } from "@/utils/interfaces";
+import clsx from "clsx";
 
 export default function TextArea({
   value = "",
@@ -36,6 +23,10 @@ export default function TextArea({
   onHeightChange,
   copy = false,
   tts = false,
+  onAddToFavorites,
+  onRemoveFromFavorites,
+  inFavorites = false,
+  interactive = true,
   ...props
 }: TextAreaProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -87,42 +78,60 @@ export default function TextArea({
 
   const currentLength = value?.length || 0;
   const isNearLimit = maxLength && currentLength >= maxLength * 0.9;
-  const [showTooltip, setShowTooltip] = useState(false)
+  const [showTooltip, setShowTooltip] = useState(false);
 
   return (
-    <div className="relative w-full ">
+    <div className={"relative w-full rounded-lg"}>
+      {onAddToFavorites && value.length > 0 && (
+        <div
+          className="size-[1.806vw] flex items-center justify-center cursor-pointer absolute right-[1.111vw] top-[1.111vw]"
+          onClick={() => {
+            if (inFavorites) {
+              onRemoveFromFavorites?.();
+            } else {
+              onAddToFavorites?.();
+            }
+          }}
+        >
+          {inFavorites ? <HeartIcon /> : <HeartEmptyIcon />}
+        </div>
+      )}
       <textarea
         ref={textAreaRef}
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`w-full overflow-hidden p-[1.111vw] pb-[3.333vw] rounded-lg border border-gray-300 focus:outline-none  resize-none ${className}`}
+        className={clsx(
+          `w-full overflow-hidden p-[1.111vw] pb-[3.333vw] rounded-lg border border-gray-300 focus:outline-none  resize-none`,
+          props.disabled && interactive ? "!bg-gray-200" : "",
+          className
+        )}
         {...props}
       />
       {copy && (
-          <Button
-            className="absolute bottom-[1.111vw] left-[1.111vw] size-[1.806vw]"
-            onClick={() => {
-              setShowTooltip(true);
-              navigator.clipboard.writeText(value);
-              setTimeout(() => {
-                setShowTooltip(false);
-              }, 500);
+        <Button
+          className="absolute bottom-[1.111vw] left-[1.111vw] size-[1.806vw]"
+          onClick={() => {
+            setShowTooltip(true);
+            navigator.clipboard.writeText(value);
+            setTimeout(() => {
+              setShowTooltip(false);
+            }, 500);
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: showTooltip ? 1 : 0,
+              y: showTooltip ? "-10%" : 0,
             }}
+            className="absolute px-[1.111vw] top-[-100%] left-1/2 -translate-x-1/2"
           >
-            <motion.div 
-              initial={{opacity:0}}
-              animate={{
-                opacity: showTooltip ? 1 : 0,
-                y: showTooltip ? "-10%" : 0
-              }} 
-              className="absolute px-[1.111vw] top-[-100%] left-1/2 -translate-x-1/2"
-            >
-              Скопировано
-            </motion.div>
-            <CopyIcon />
-          </Button>
+            Скопировано
+          </motion.div>
+          <CopyIcon />
+        </Button>
       )}
       {tts && (
         <Button

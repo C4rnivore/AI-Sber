@@ -1,10 +1,6 @@
 import Button from "@/components/ui/Button";
 import SwitchIcon from "@/icons/SwitchIcon";
-
-interface LanguageSwitcherProps {
-  activeTargetLanguage: "nanai" | "russian";
-  onChange: (lang: "nanai" | "russian") => void;
-}
+import { LanguageSwitcherProps } from "@/utils/interfaces";
 
 const LanguageSwitcher = ({
   activeTargetLanguage,

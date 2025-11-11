@@ -1,17 +1,12 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { TranslationStore } from "@/utils/interfaces";
 
-interface TranslationStore {
-  translateTo: "russian" | "nanai";
-  setTranslateTo: (translateTo: "russian" | "nanai") => void;
-
-  originalText: string;
-  setOriginalText: (originalText: string) => void;
-
-  translatedText: string;
-  setTranslatedText: (translatedText: string) => void;
-}
-
+/**
+ * Хук для хранения состояния переводчика
+ * @returns объект с состоянием переводчика:
+ * translateTo - язык перевода, originalText - исходный текст, translatedText - переведенный текст
+ */
 const useTranslationStore = create<TranslationStore>()(
   persist(
     (set) => ({

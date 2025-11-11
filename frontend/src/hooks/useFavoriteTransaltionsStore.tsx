@@ -1,46 +1,25 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import {
+  FavoriteTranslationItem,
+  FavoriteTranslationsStore,
+} from "@/utils/interfaces";
 
-interface FavoriteTranslationItem{
-  sourceLanguage: "nanai" | "russian",
-  sourceContent: string
-  tragetLanguage: "nanai" | "russian",
-  tragetContent: string
-}
-
-interface FavoriteTranslationsStore {
-  favoriteTranslations: FavoriteTranslationItem[];
-  addFavoriteTranslation: (translation: FavoriteTranslationItem) => void;
-  removeFavoriteTranslation: (translation: FavoriteTranslationItem) => void;
-}
-
+/**
+ * Хук для хранения состояния избранных переводов
+ */
 const useFavoriteTranslationsStore = create<FavoriteTranslationsStore>()(
   persist(
     (set, get) => ({
-      favoriteTranslations: [{
-        sourceLanguage:"nanai",
-        sourceContent: "1211111111111111111111111111111111",
-        tragetLanguage:"russian",
-        tragetContent: "1211111111111111111111111111111111 211111111111111111111111111111111211111111111111111111111111111111211111111111111111111111111111111",
-      },{
-        sourceLanguage:"nanai",
-        sourceContent: "1211111111111111111111111111111111",
-        tragetLanguage:"russian",
-        tragetContent: "1211111111111111111111111111111111 211111111111111111111111111111111211111111111111111111111111111111211111111111111111111111111111111",
-      },{
-        sourceLanguage:"nanai",
-        sourceContent: "1211111111111111111111111111111111",
-        tragetLanguage:"russian",
-        tragetContent: "1211111111111111111111111111111111 211111111111111111111111111111111211111111111111111111111111111111211111111111111111111111111111111",
-      }],
+      favoriteTranslations: [],
       addFavoriteTranslation: (translation) =>
         set({
           favoriteTranslations: [...get().favoriteTranslations, translation],
         }),
-      removeFavoriteTranslation: (translation) =>
+      removeFavoriteTranslation: (id: FavoriteTranslationItem["id"]) =>
         set({
           favoriteTranslations: get().favoriteTranslations.filter(
-            (t) => t !== translation
+            (t) => t.id !== id
           ),
         }),
     }),

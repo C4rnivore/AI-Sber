@@ -1,6 +1,6 @@
 "use client";
-import LanguageSwitcher from "./LangaugeSwitcher";
-import TranslationArea from "./TranslationArea";
+import LanguageSwitcher from "../../components/translator/LangaugeSwitcher";
+import TranslationArea from "../../components/translator/TranslationArea";
 import useTranslationStore from "@/hooks/useTranslationStore";
 
 export default function Translator() {

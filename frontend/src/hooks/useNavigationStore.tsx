@@ -1,19 +1,15 @@
 import { create } from "zustand";
-import type { NavigationTabs } from "@/utils/types";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { NavigationStore } from "@/utils/interfaces";
 
-interface NavigationStore {
-  navigationTab: NavigationTabs;
-  setNavigationTab: (navigationTab: NavigationTabs) => void;
-}
-
+/**
+ * Хук для хранения состояния навигации
+ */
 const useNavigationStore = create<NavigationStore>()(
   persist(
-    (set): NavigationStore => ({
+    (set) => ({
       navigationTab: "translator",
-      setNavigationTab: (navigationTab: NavigationTabs) => {
-        set({ navigationTab });
-      },
+      setNavigationTab: (navigationTab) => set({ navigationTab }),
     }),
     {
       name: "navigation-store",
