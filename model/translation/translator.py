@@ -51,12 +51,13 @@ class Translator:
 
     def _download_model(self) -> None:
         filenames = [
-            "pytorch_model.bin",
             "config.json",
             "generation_config.json",
+            "flax_model.msgpack",
+            "model.safetensors",
+            "pytorch_model.bin",
             "rust_model.ot",
-            "source.spm",
-            "target.spm",
+            "sentencepiece.bpe.model",
             "tokenizer_config.json",
             "tf_model.h5",
         ]
@@ -70,7 +71,7 @@ class Translator:
             )
 
     def _load_model_with_lora(self):
-        lora_path = f"{self._LORA_DIR}/nani_lora" if self.target_language == "nanai" else f"{self._LORA_DIR}/nanai_lora_reverse"
+        lora_path = f"{self._LORA_DIR}/nanai_lora" if self.target_language == "russian" else f"{self._LORA_DIR}/nanai_lora_reverse"
         
         print("[INFO] Загружаем базовую модель и LoRA...")
         base_model = AutoModelForSeq2SeqLM.from_pretrained(self._MODEL_ID, cache_dir=self._CACHE_DIR)

@@ -1,21 +1,12 @@
 "use client";
-import { useState } from "react";
-import LanguageSwitcher from "./LangaugeSwitcher";
-import TranslationArea from "./TranslationArea";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import LanguageSwitcher from "../../components/translator/LangaugeSwitcher";
+import TranslationArea from "../../components/translator/TranslationArea";
+import useTranslationStore from "@/hooks/useTranslationStore";
 
 export default function Translator() {
-  const { setValue, getValue } = useLocalStorage();
-
-  // Мб создать отдельный useTranslationStore для всей логики
-  const [targetLanguage, setTargetLanguage] = useState<"nanai" | "russian">(
-    (getValue("lastTargetLanguage") as "nanai" | "russian") || "russian"
-  );
-
-  const handleTargetLanguageSwitch = () => {
-    const updatedValue = targetLanguage === "russian" ? "nanai" : "russian";
-    setTargetLanguage(updatedValue);
-    setValue("lastTargetLanguage", updatedValue);
+  const { translateTo, setTranslateTo } = useTranslationStore();
+  const handleLanguageChange = (lang: "nanai" | "russian") => {
+    setTranslateTo(lang);
   };
 
   return (
@@ -24,8 +15,8 @@ export default function Translator() {
         Нанайско-русский онлайн переводчик
       </h1>
       <LanguageSwitcher
-        activeTargetLanguage={targetLanguage}
-        onChange={handleTargetLanguageSwitch}
+        activeTargetLanguage={translateTo}
+        onChange={handleLanguageChange}
       />
       <TranslationArea />
     </div>

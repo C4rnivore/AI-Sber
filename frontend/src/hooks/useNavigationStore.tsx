@@ -1,18 +1,21 @@
 import { create } from "zustand";
-import type { NavigationTabs } from "@/utils/types";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { NavigationStore } from "@/utils/interfaces";
 
-interface NavigationStore {
-  navigationTab: NavigationTabs;
-  setNavigationTab: (navigationTab: NavigationTabs) => void;
-}
-
-const useNavigationStore = create<NavigationStore>((set) => ({
-  navigationTab:
-    (window.localStorage.getItem("lastNavigationTab") as NavigationTabs) ||
-    "translator",
-  setNavigationTab: (navigationTab) => {
-    set({ navigationTab });
-  },
-}));
+/**
+ * Хук для хранения состояния навигации
+ */
+const useNavigationStore = create<NavigationStore>()(
+  persist(
+    (set) => ({
+      navigationTab: "translator",
+      setNavigationTab: (navigationTab) => set({ navigationTab }),
+    }),
+    {
+      name: "navigation-store",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
 
 export default useNavigationStore;
