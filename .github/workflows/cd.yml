@@ -1,0 +1,62 @@
+name: CD
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi uvicorn starlette pydantic
+          if [ -f model/requirements.txt ]; then
+            pip install -r model/requirements.txt
+          fi
+      
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: bun install --frozen-lockfile
+      
+      - name: Build frontend
+        working-directory: ./frontend
+        run: bun run build
+        env:
+          NODE_ENV: production
+      
+      - name: Create deployment artifact
+        run: |
+          mkdir -p deployment
+          cp -r backend deployment/
+          cp -r model deployment/
+          cp main.py deployment/
+          cp -r frontend/.next deployment/frontend-build || true
+          tar -czf deployment.tar.gz deployment/
+      
+      - name: Upload deployment artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-package
+          path: deployment.tar.gz
+          retention-days: 7
+
