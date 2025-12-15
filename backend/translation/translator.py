@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from huggingface_hub import hf_hub_download, try_to_load_from_cache
 from peft import PeftModel
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from pathlib import Path
 
 load_dotenv()
 
@@ -16,18 +17,20 @@ class TranslationService:
     Сервис для перевода текста. Загружает модели один раз при инициализации
     и переиспользует их для всех последующих запросов.
     """
-    def __init__(self, config: TranslatorConfig):
-        self._hf_token = config.hugging_face_token
-        self.model_id = config.model_id
-        self.cache_dir = config.cache_dir
-        self.lora_dir = config.lora_dir
-        self.filenames = config.filenames
+
+    def __init__(self, base_model_path: str, lora_dir: str):
+        self.base_model_path = Path(base_model_path)
+        self.lora_dir = Path(lora_dir)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.models: Dict[str, Tuple] = {}
-        self._ensure_model_cached()
+
+        print(f"Загрузка базовой модели из: {self.base_model_path}")
+        print(f"LoRA адаптеры из: {self.lora_dir}")
+
         self._load_all_models()
 
-    def translate_with_attempts(self, text: str, attempt: int, target_language: Literal["russian", "nanai"] ):
+    def translate_with_attempts(self, text: str, attempt: int, target_language: Literal["russian", "nanai"]):
+        """Перевод с несколькими попытками разбиения текста"""
         all_variants = []
 
         chunks = self.split_for_translation(text, attempt)
@@ -47,8 +50,8 @@ class TranslationService:
 
         return all_variants[0]
 
-    def split_for_translation(self,text: str, attempt: int) -> List[str]:
-
+    def split_for_translation(self, text: str, attempt: int):
+        """Разбиение текста на части для перевода"""
         if attempt < 1:
             raise ValueError("attempt должен быть >= 1")
 
@@ -83,52 +86,72 @@ class TranslationService:
             result.append(chunk_text)
             idx += size
 
-        print(result)
+        print(f"Разбиение на {len(result)} частей: {result}")
         return result
 
     def translate(self, text: str, target_language: Literal["russian", "nanai"], max_length: int = 1000) -> str:
+        """Основной метод перевода"""
         if not text or len(text) == 0:
             raise ValueError("Текст для перевода не может быть пустым.")
-        
+
+        if target_language not in self.models:
+            raise ValueError(f"Язык {target_language} не поддерживается")
+
         model, tokenizer = self.models[target_language]
-        
-        inputs = tokenizer(text, return_tensors="pt").to(self.device)
-        outputs = model.generate(**inputs, max_length=max_length)
+
+        # Подготовка входных данных
+        inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512).to(self.device)
+
+        # Генерация перевода
+        with torch.no_grad():
+            outputs = model.generate(
+                **inputs,
+                max_length=max_length,
+                num_beams=5,
+                early_stopping=True
+            )
+
         return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     def _load_all_models(self) -> None:
+        """Загружает все модели (с LoRA адаптерами)"""
+        print("Загрузка моделей с LoRA адаптерами...")
+
+        # Загружаем модель для перевода с нанайского на русский
         self.models["russian"] = self._load_model_with_lora("nanai_lora")
+
+        # Загружаем модель для перевода с русского на нанайский
         self.models["nanai"] = self._load_model_with_lora("nanai_lora_reverse")
 
-    def _ensure_model_cached(self) -> None:
-        if not self._is_model_cached():
-            self._download_model()
+        print("✅ Все модели загружены")
 
-    def _is_model_cached(self) -> bool:
-        try:
-            path = try_to_load_from_cache(self.model_id, "config.json", cache_dir=self.cache_dir)
-            return path is not None
-        except Exception:
-            return False
+    def _load_model_with_lora(self, lora_name: str) -> Tuple:
+        """Загружает базовую модель с LoRA адаптером"""
+        lora_path = self.lora_dir / lora_name
 
-    def _download_model(self) -> None:
-        for filename in self.filenames:
-            hf_hub_download(
-                repo_id=self.model_id,
-                filename=filename,
-                token=self._hf_token,
-                local_dir=self.cache_dir,
-            )
+        print(f"  Загрузка LoRA адаптера: {lora_name}")
+        print(f"  Путь к адаптеру: {lora_path}")
 
-    def _load_model_with_lora(self, lora_name: str):
-        lora_path = f"{self.lora_dir}/{lora_name}"
-        
+        if not lora_path.exists():
+            raise FileNotFoundError(f"LoRA адаптер не найден: {lora_path}")
+
+        # Загружаем базовую модель
+        print(f"  Загрузка базовой модели из: {self.base_model_path}")
         base_model = AutoModelForSeq2SeqLM.from_pretrained(
-            self.model_id, 
-            cache_dir=self.cache_dir
+            str(self.base_model_path),
+            local_files_only=True
         )
-        model_with_lora = PeftModel.from_pretrained(base_model, lora_path)
+
+        # Загружаем LoRA адаптер
+        model_with_lora = PeftModel.from_pretrained(base_model, str(lora_path))
         model_with_lora.to(self.device)
         model_with_lora.eval()
-        tokenizer = AutoTokenizer.from_pretrained(lora_path)
+
+        # Загружаем токенизатор из папки с LoRA адаптером
+        tokenizer = AutoTokenizer.from_pretrained(
+            str(lora_path),
+            local_files_only=True
+        )
+
+        print(f"  ✅ {lora_name} загружен")
         return model_with_lora, tokenizer
