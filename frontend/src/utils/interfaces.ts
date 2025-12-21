@@ -22,6 +22,7 @@ export interface TextAreaProps
   onHeightChange?: (height: number) => void;
   onAddToFavorites?: () => void;
   onRemoveFromFavorites?: () => void;
+  onWordSelect?: (word: string | null) => void;
 }
 
 export interface LanguageSwitcherProps {
