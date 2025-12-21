@@ -1,5 +1,6 @@
 import TextArea from "@/components/ui/TextArea";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import useDebouncedValue from "@/hooks/useDebouncedValue";
 import useTranslationStore from "@/hooks/useTranslationStore";
 import useFavoriteTranslationsStore from "@/hooks/useFavoriteTransaltionsStore";
@@ -44,28 +45,62 @@ export default function TranslationArea() {
     number | undefined
   >(undefined);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const wordSelectAbortRef = useRef<AbortController | null>(null);
 
-  // Отключаем флаг начальной загрузки после первого рендера
   useEffect(() => {
     setIsInitialLoad(false);
   }, []);
 
+  // Обработка выделения слова в текстовых полях
+  const handleWordSelect = (word: string | null) => {
+    setSelectedWord(word);
+    if (wordSelectAbortRef.current) {
+      wordSelectAbortRef.current.abort();
+    }
+
+    if (word) {
+      const abortController = new AbortController();
+      wordSelectAbortRef.current = abortController;
+      fetchUsages(word, abortController.signal);
+    } else if (debouncedOriginal.trim().split(" ").length !== 1) {
+      // Очищаем usages только если текст не является одним словом
+      clearUsages();
+    } else {
+      // Если текст - одно слово, восстанавливаем usages для него
+      const abortController = new AbortController();
+      wordSelectAbortRef.current = abortController;
+      fetchUsages(debouncedOriginal.trim(), abortController.signal);
+    }
+  };
+
   // Запрос на перевод при изменении debounce значения оригинального текста
   useEffect(() => {
-    if (isSwapping || isFetching) return;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    if (isSwapping) return;
     if (debouncedOriginal === "") {
+      setTranslatedText("");
       clearAlternativeTranslations();
       clearUsages();
       return;
     }
-
-    // Пропускаем запрос при начальной загрузке, если уже есть перевод
     if (isInitialLoad && translatedText) {
       return;
     }
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
 
     setIsFetching(true);
-    fetchTranslation(debouncedOriginal, translateTo, attemptCount)
+    fetchTranslation(
+      debouncedOriginal,
+      translateTo,
+      attemptCount,
+      abortController.signal
+    )
       .then((translatedText) => {
         setTranslatedText(translatedText);
 
@@ -81,45 +116,84 @@ export default function TranslationArea() {
           });
         }
 
-        if (debouncedOriginal.split(" ").length === 1) {
-          // Очищаем использования перед получением новых
-          fetchUsages(debouncedOriginal);
+        if (debouncedOriginal.trim().split(" ").length === 1) {
+          // Получаем примеры использования для одного слова
+          fetchUsages(debouncedOriginal.trim(), abortController.signal);
+        } else {
+          clearUsages();
         }
       })
+      .catch((error) => {
+        if (axios.isCancel(error)) return;
+        console.error("Translation error:", error);
+      })
       .finally(() => {
-        clearAlternativeTranslations();
-        setIsFetching(false);
+        if (abortControllerRef.current === abortController) {
+          clearAlternativeTranslations();
+          setIsFetching(false);
+        }
       });
+
+    return () => {
+      abortController.abort();
+    };
   }, [debouncedOriginal]);
 
-  // Получаем альтернативные переводы
+  const altAbortControllerRef = useRef<AbortController | null>(null);
   const fetchAlternativeTranslations = (attempt: number) => {
     if (attempt === 1) return;
+    if (altAbortControllerRef.current) {
+      altAbortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    altAbortControllerRef.current = abortController;
 
     setAttemptCount(attempt);
     setIsFetching(true);
 
-    fetchTranslation(debouncedOriginal, translateTo, attempt)
+    fetchTranslation(
+      debouncedOriginal,
+      translateTo,
+      attempt,
+      abortController.signal
+    )
       .then((translatedText) => {
         addAlternativeTranslation(translatedText);
       })
+      .catch((error) => {
+        if (axios.isCancel(error)) return;
+        console.error("Alternative translation error:", error);
+      })
       .finally(() => {
-        setIsFetching(false);
+        if (altAbortControllerRef.current === abortController) {
+          setIsFetching(false);
+        }
       });
   };
 
-  const fetchUsages = (word: string) => {
-    fetchWordUsages(word).then((usages) => {
-      setWordUsages(usages);
-    });
-    fetchSentencesUsages(word).then((usages) => {
-      setSentencesUsages(
-        usages.map((usage) => ({
-          original: usage.original,
-          translation: usage.translated,
-        }))
-      );
-    });
+  const fetchUsages = (word: string, signal?: AbortSignal) => {
+    fetchWordUsages(word, signal)
+      .then((usages) => {
+        setWordUsages(usages);
+      })
+      .catch((error) => {
+        if (axios.isCancel(error)) return;
+        console.error("Word usages error:", error);
+      });
+    fetchSentencesUsages(word, signal)
+      .then((usages) => {
+        setSentencesUsages(
+          usages.map((usage) => ({
+            original: usage.original,
+            translation: usage.translated,
+          }))
+        );
+      })
+      .catch((error) => {
+        if (axios.isCancel(error)) return;
+        console.error("Sentences usages error:", error);
+      });
   };
 
   // Меняем местами тексты при смене языка
@@ -203,6 +277,7 @@ export default function TranslationArea() {
         className="bg-white border-[0.5px] border-[#B8B8B8] font-semibold lg:text-[1.667vw] text-[5vw] max-lg:min-h-[67.5vw]"
         copy={true}
         tts={true}
+        onWordSelect={handleWordSelect}
       />
       <TextArea
         placeholder="Здесь появится перевод..."
@@ -216,6 +291,7 @@ export default function TranslationArea() {
         onAddToFavorites={onAddToFavorites}
         inFavorites={inFavorites}
         onRemoveFromFavorites={onRemoveFromFavorites}
+        onWordSelect={handleWordSelect}
       />
 
       {translatedText && (

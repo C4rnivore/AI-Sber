@@ -27,10 +27,30 @@ export default function TextArea({
   onRemoveFromFavorites,
   inFavorites = false,
   interactive = true,
+  onWordSelect,
   ...props
 }: TextAreaProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const lastHeightRef = useRef<number>(0);
+
+  // Обработка выделения слова
+  const handleSelectionChange = useCallback(() => {
+    if (!onWordSelect || !textAreaRef.current) return;
+
+    const textarea = textAreaRef.current;
+    const selectedText = textarea.value
+      .substring(textarea.selectionStart, textarea.selectionEnd)
+      .trim();
+    if (
+      selectedText &&
+      !selectedText.includes(" ") &&
+      selectedText.length > 0
+    ) {
+      onWordSelect(selectedText);
+    } else if (selectedText === "") {
+      onWordSelect(null);
+    }
+  }, [onWordSelect]);
 
   // Автоматическое изменение высоты textarea
   const adjustHeight = useCallback(() => {
@@ -100,6 +120,9 @@ export default function TextArea({
         ref={textAreaRef}
         value={value}
         onChange={handleChange}
+        onSelect={handleSelectionChange}
+        onMouseUp={handleSelectionChange}
+        onKeyUp={handleSelectionChange}
         placeholder={placeholder}
         maxLength={maxLength}
         className={clsx(

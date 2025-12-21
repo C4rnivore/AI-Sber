@@ -18,27 +18,28 @@ export const buildTranslationUrl = (
 export const fetchTranslation = (
   text: string,
   translateTo: "russian" | "nanai",
-  attempt: number = 1
+  attempt: number = 1,
+  signal?: AbortSignal
 ) => {
   return axios
-    .get(buildTranslationUrl(text, translateTo, attempt)) // По умолчанию 1 чтобы использовался дефолтный перевод по полной строке
+    .get(buildTranslationUrl(text, translateTo, attempt), { signal }) // По умолчанию 1 чтобы использовался дефолтный перевод по полной строке
     .then(
       (response: AxiosResponse<TranslationResponseDTO>) =>
         response.data.text_to_translated
     );
 };
 
-export const fetchWordUsages = (word: string) => {
+export const fetchWordUsages = (word: string, signal?: AbortSignal) => {
   return axios
-    .get(`http://localhost:5174/dictionary/get-word?word=${word}`)
+    .get(`http://localhost:5174/dictionary/get-word?word=${word}`, { signal })
     .then(
       (response: AxiosResponse<WordUsagesDTO>) => response.data.translations
     );
 };
 
-export const fetchSentencesUsages = (word: string) => {
+export const fetchSentencesUsages = (word: string, signal?: AbortSignal) => {
   return axios
-    .get(`http://localhost:5174/dictionary/sentences?word=${word}`)
+    .get(`http://localhost:5174/dictionary/sentences?word=${word}`, { signal })
     .then(
       (response: AxiosResponse<SentencesUsagesDTO>) => response.data.matches
     );
