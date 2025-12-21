@@ -19,20 +19,20 @@ export default function Header() {
   }, [navigationTab]);
 
   return (
-    <header className="w-full py-[0.833vw] flex justify-between items-center border-b border-[#B8B8B8] px-[10.417vw] [box-shadow:0_0_5.5_0_#0000001F]">
-      <div className="text-[1.389vw] text-[#2C734E]">
+    <header className="w-full lg:py-[0.833vw] py-[3vw] flex lg:flex-row flex-col justify-between items-center border-b border-[#B8B8B8] lg:px-[10.417vw] px-[2.5vw] [box-shadow:0_0_5.5_0_#0000001F]">
+      <div className="lg:text-[1.389vw] text-[6vw] text-[#2C734E] max-lg:mb-[2vw]">
         <span className="font-medium">AI</span> Переводчик
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex lg:gap-2 gap-[4.5vw]">
         <Button
           className={clsx(
-            "text-[1.111vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
+            "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
             navigationTab === "translator" && "text-[#2C734E]"
           )}
           onClick={() => setNavigationTab("translator")}
         >
-          <div className="size-[1.806vw]">
+          <div className="lg:size-[1.806vw] size-[4vw]">
             <ChatIcon />
           </div>
           Переводчик
@@ -40,12 +40,12 @@ export default function Header() {
 
         <Button
           className={clsx(
-            "text-[1.111vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
+            "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
             navigationTab === "favorites" && "text-[#2C734E]"
           )}
           onClick={() => setNavigationTab("favorites")}
         >
-          <div className="size-[1.806vw]">
+          <div className="lg:size-[1.806vw] size-[4vw]">
             <FavoritesIcon />
           </div>
           Избранные переводы
@@ -53,12 +53,12 @@ export default function Header() {
 
         <Button
           className={clsx(
-            "text-[1.111vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
+            "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
             navigationTab === "history" && "text-[#2C734E]"
           )}
           onClick={() => setNavigationTab("history")}
         >
-          <div className="size-[1.806vw]">
+          <div className="lg:size-[1.806vw] size-[4vw]">
             <HistroyIcon />
           </div>
           История

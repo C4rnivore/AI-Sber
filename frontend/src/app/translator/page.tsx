@@ -17,16 +17,19 @@ export default function Translator() {
 
   return (
     <div className="pt-[4.167vw]">
-      <h1 className="text-[1.667vw] text-[#2C734E] mb-[0.972vw] font-semibold">
+      <h1 className="lg:text-[1.667vw] text-[4vw] max-lg:text-center max-lg:mb-[4vw] text-[#2C734E] mb-[0.972vw] font-semibold">
         Нанайско-русский онлайн переводчик
       </h1>
-      <LanguageSwitcher
-        activeTargetLanguage={translateTo}
-        onChange={handleLanguageChange}
-      />
+      <div className="max-lg:hidden">
+        <LanguageSwitcher
+          activeTargetLanguage={translateTo}
+          onChange={handleLanguageChange}
+        />
+      </div>
+
       <TranslationArea />
 
-      <div className="w-[calc(100%+10.417vw*2)] -mx-[10.417vw]">
+      <div className="lg:w-[calc(100%+10.417vw*2)] lg:-mx-[10.417vw] w-[calc(100%+14vw)] -mx-[7vw]">
         <TranslationExamples
           alternativeTranslations={alternativeTranslations}
         />

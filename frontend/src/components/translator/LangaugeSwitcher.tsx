@@ -16,9 +16,9 @@ const LanguageSwitcher = ({
   };
 
   return (
-    <div className="flex justify-between gap-5 px-[1.389vw] relative z-[10]">
+    <div className="flex justify-between lg:px-[1.389vw] px-[6vw] relative z-[10]">
       <motion.div
-        className="w-[36.111vw] flex justify-center items-center text-[1.111vw] bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F] overflow-hidden"
+        className="lg:w-[36.111vw] w-[28.75vw] flex justify-center items-center lg:text-[1.111vw] text-[3.5vw] bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F] overflow-hidden"
         key={`left-${activeTargetLanguage}`}
       >
         <motion.span
@@ -37,10 +37,10 @@ const LanguageSwitcher = ({
 
       <Button
         onClick={handleSwitch}
-        className="size-[2.5vw] items-center justify-center bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F]"
+        className="lg:size-[2.5vw] size-[9vw] items-center justify-center bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F]"
       >
         <motion.div
-          className="w-[1.25vw] h-[1.667vw]"
+          className="lg:w-[1.25vw] w-[4vw] lg:h-[1.667vw]"
           animate={{ rotate: rotation }}
           transition={{
             type: "spring",
@@ -54,7 +54,7 @@ const LanguageSwitcher = ({
       </Button>
 
       <motion.div
-        className="w-[36.111vw] flex justify-center items-center text-[1.111vw] bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F] overflow-hidden"
+        className="lg:w-[36.111vw] w-[28.75vw] flex justify-center items-center lg:text-[1.111vw] text-[3.5vw] bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F] overflow-hidden"
         key={`right-${activeTargetLanguage}`}
       >
         <motion.span

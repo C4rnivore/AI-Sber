@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className={`${font.variable} antialiased `}>
         <Header />
-        <main className="mx-[10.417vw]">{children}</main>
+        <main className="lg:mx-[10.417vw] mx-[7vw]">{children}</main>
         <div
           style={{
             position: "fixed",

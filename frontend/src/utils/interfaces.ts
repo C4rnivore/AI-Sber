@@ -32,6 +32,7 @@ export interface LanguageSwitcherProps {
 export interface FavoriteItemProps {
   sourceLanguage: string;
   content: string;
+  className?: string;
 }
 
 export interface ButtonProps {
@@ -77,7 +78,6 @@ export interface AlternativeTranslationsStore {
   addAlternativeTranslation: (translation: string) => void;
   clearAlternativeTranslations: () => void;
 }
-
 
 export interface UsagesStore {
   wordUsages: string[];

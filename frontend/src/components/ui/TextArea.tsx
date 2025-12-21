@@ -84,7 +84,7 @@ export default function TextArea({
     <div className={"relative w-full rounded-lg"}>
       {onAddToFavorites && value.length > 0 && (
         <div
-          className="size-[1.806vw] flex items-center justify-center cursor-pointer absolute right-[1.111vw] top-[1.111vw]"
+          className="lg:size-[1.806vw] size-[5vw] flex items-center justify-center cursor-pointer absolute lg:right-[1.111vw] right-[4vw] lg:top-[1.111vw] top-[4vw]"
           onClick={() => {
             if (inFavorites) {
               onRemoveFromFavorites?.();
@@ -103,7 +103,7 @@ export default function TextArea({
         placeholder={placeholder}
         maxLength={maxLength}
         className={clsx(
-          `w-full overflow-hidden p-[1.111vw] pb-[3.333vw] rounded-lg border border-gray-300 focus:outline-none  resize-none`,
+          `w-full overflow-hidden lg:p-[1.111vw] p-[4vw] lg:pb-[3.333vw] pb-[13vw] rounded-lg border border-gray-300 focus:outline-none  resize-none`,
           props.disabled && interactive ? "!bg-gray-200" : "",
           className
         )}
@@ -111,7 +111,7 @@ export default function TextArea({
       />
       {copy && (
         <Button
-          className="absolute bottom-[1.111vw] left-[1.111vw] size-[1.806vw]"
+          className="absolute lg:bottom-[1.111vw] bottom-[4vw] lg:left-[1.111vw] left-[12vw] lg:size-[1.806vw] size-[5vw]"
           onClick={() => {
             setShowTooltip(true);
             navigator.clipboard.writeText(value);
@@ -135,7 +135,7 @@ export default function TextArea({
       )}
       {tts && (
         <Button
-          className="absolute bottom-[1.111vw] left-[3.333vw] size-[1.806vw]"
+          className="absolute lg:bottom-[1.111vw] bottom-[4vw] lg:left-[3.333vw] left-[4vw] lg:size-[1.806vw] size-[5vw]"
           onClick={() => {
             console.log("TTS");
           }}
@@ -145,7 +145,7 @@ export default function TextArea({
       )}
       {maxLength && showCharCount && (
         <div
-          className={`absolute bottom-[1.111vw] right-[1.111vw] text-[1.111vw] ${
+          className={`absolute lg:bottom-[1.111vw] bottom-[4vw] lg:right-[1.111vw] right-[4vw] lg:text-[1.111vw] text-[3.75vw] ${
             isNearLimit ? "text-red-500" : "text-gray-400"
           }`}
         >

@@ -12,11 +12,13 @@ import {
   fetchSentencesUsages,
   fetchTranslation,
 } from "@/utils/axiosUtils";
+import LanguageSwitcher from "./LangaugeSwitcher";
 
 export default function TranslationArea() {
   // ------------------------------ Сторы для данных ------------------------------
   const {
     translateTo,
+    setTranslateTo,
     originalText,
     setOriginalText,
     translatedText,
@@ -179,8 +181,18 @@ export default function TranslationArea() {
     setInFavorites(false);
   };
 
+  const handleLanguageChange = (lang: "nanai" | "russian") => {
+    setTranslateTo(lang);
+  };
+
   return (
-    <div className="relative grid grid-cols-2 px-[1.389vw] pb-[1.389vw] pt-[2.083vw] gap-[1.389vw] items-stretch bg-linear-to-r from-[#D9E4D9] to-[#114711] rounded-[1.111vw] -mt-[1.042vw] z-[9]">
+    <div className="relative grid lg:grid-cols-2 lg:p-[1.389vw] lg:pt-[2.083vw] p-[6vw] pt-[16vw] gap-[1.389vw] items-stretch bg-linear-to-r from-[#D9E4D9] to-[#114711] lg:rounded-[1.111vw] rounded-[4vw] -mt-[1.042vw] z-[9]">
+      <div className="lg:hidden absolute top-[4vw] left-[0] w-full">
+        <LanguageSwitcher
+          activeTargetLanguage={translateTo}
+          onChange={handleLanguageChange}
+        />
+      </div>
       <TextArea
         value={originalText}
         onChange={setOriginalText}
@@ -188,7 +200,7 @@ export default function TranslationArea() {
         maxLength={200}
         syncHeight={syncHeight}
         onHeightChange={setHeight1}
-        className="bg-white border-[0.5px] border-[#B8B8B8] font-semibold text-[1.667vw]"
+        className="bg-white border-[0.5px] border-[#B8B8B8] font-semibold lg:text-[1.667vw] text-[5vw] max-lg:min-h-[67.5vw]"
         copy={true}
         tts={true}
       />
@@ -198,7 +210,7 @@ export default function TranslationArea() {
         disabled={isFetching}
         syncHeight={syncHeight}
         onHeightChange={setHeight2}
-        className="bg-white border-[0.5px] border-[#B8B8B8] font-semibold text-[1.667vw]"
+        className="bg-white border-[0.5px] border-[#B8B8B8] font-semibold lg:text-[1.667vw] text-[5vw] "
         copy={true}
         tts={true}
         onAddToFavorites={onAddToFavorites}
@@ -210,7 +222,7 @@ export default function TranslationArea() {
         <button
           onClick={() => fetchAlternativeTranslations(attemptCount + 1)}
           disabled={isFetching || isSwapping}
-          className="bg-white absolute right-[2.083vw] border-[1px] border-[#B8B8B8] disabled:opacity-50 disabled:cursor-not-allowed bottom-[2.083vw] py-[0.313vw] px-[0.726vw] hover:cursor-pointer rounded-full w-max"
+          className="bg-white max-lg:text-[3vw] absolute lg:right-[2.083vw] right-[10vw] border-[1px] border-[#B8B8B8] disabled:opacity-50 disabled:cursor-not-allowed lg:bottom-[2.083vw] bottom-[10vw] lg:py-[0.313vw] py-[1.5vw] max-lg:pb-[1vw] lg:px-[0.726vw] px-[3vw] hover:cursor-pointer rounded-full w-max"
         >
           Перевести по-другому
         </button>
