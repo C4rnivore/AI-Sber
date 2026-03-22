@@ -1,0 +1,28 @@
+{
+  "theme_color": "#8936FF",
+  "background_color": "#2EC6FE",
+  "icons": [
+    {
+      "purpose": "maskable",
+      "sizes": "512x512",
+      "src": "icon512_maskable.png",
+      "type": "image/png"
+    },
+    {
+      "purpose": "any",
+      "sizes": "512x512",
+      "src": "icon512_rounded.png",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait",
+  "display": "standalone",
+  "dir": "left",
+  "lang": "ru-RU",
+  "name": "MY.HERITAGE",
+  "short_name": "MyHeritage",
+  "start_url": "http://localhost:3000/",
+  "scope": "http://localhost:3000/",
+  "description": "Переводите там, где раньше это было невозможным. Наш переводчик помогает в работе с малоресурсными языками: — быстро, точно и доступно.",
+  "id": "http://localhost:3000/"
+}

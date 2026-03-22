@@ -22,6 +22,10 @@ export default function RootLayout({
     <html lang="ru">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/icon512_maskable.png" />
+        <link rel="apple-touch-icon" href="/icon512_maskable.png" />
+        <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={`${font.variable} antialiased `}>
         <Header />

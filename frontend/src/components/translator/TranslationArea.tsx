@@ -298,7 +298,7 @@ export default function TranslationArea() {
         <button
           onClick={() => fetchAlternativeTranslations(attemptCount + 1)}
           disabled={isFetching || isSwapping}
-          className="bg-white max-lg:text-[3vw] absolute lg:right-[2.083vw] right-[10vw] border-[1px] border-[#B8B8B8] disabled:opacity-50 disabled:cursor-not-allowed lg:bottom-[2.083vw] bottom-[10vw] lg:py-[0.313vw] py-[1.5vw] max-lg:pb-[1vw] lg:px-[0.726vw] px-[3vw] hover:cursor-pointer rounded-full w-max"
+          className="bg-white max-lg:text-[3vw] lg:text-[20px] absolute lg:right-[2.083vw] right-[10vw] border-[1px] border-[#B8B8B8] disabled:opacity-50 disabled:cursor-not-allowed lg:bottom-[2.083vw] bottom-[10vw] lg:py-[0.313vw] py-[1.5vw] max-lg:pb-[1vw] lg:px-[0.726vw] px-[3vw] hover:cursor-pointer rounded-full w-max"
         >
           Перевести по-другому
         </button>
