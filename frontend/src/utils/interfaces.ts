@@ -1,10 +1,11 @@
 import { TextareaHTMLAttributes } from "react";
 import { NavigationTabs } from "./types";
-import { AxiosRequestConfig } from "axios";
 
 // Props
-export interface TextAreaProps
-  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
+export interface TextAreaProps extends Omit<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "onChange"
+> {
   value?: string;
   placeholder?: string;
   maxLength?: number;
@@ -85,7 +86,7 @@ export interface UsagesStore {
   sentencesUsages: { original: string; translation: string }[];
   setWordUsages: (words: string[]) => void;
   setSentencesUsages: (
-    sentences: { original: string; translation: string }[]
+    sentences: { original: string; translation: string }[],
   ) => void;
   clearUsages: () => void;
 }

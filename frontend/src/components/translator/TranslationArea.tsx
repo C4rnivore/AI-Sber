@@ -45,7 +45,6 @@ export default function TranslationArea() {
     number | undefined
   >(undefined);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
-  const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const wordSelectAbortRef = useRef<AbortController | null>(null);
 
@@ -55,7 +54,6 @@ export default function TranslationArea() {
 
   // Обработка выделения слова в текстовых полях
   const handleWordSelect = (word: string | null) => {
-    setSelectedWord(word);
     if (wordSelectAbortRef.current) {
       wordSelectAbortRef.current.abort();
     }
@@ -99,7 +97,7 @@ export default function TranslationArea() {
       debouncedOriginal,
       translateTo,
       attemptCount,
-      abortController.signal
+      abortController.signal,
     )
       .then((translatedText) => {
         setTranslatedText(translatedText);
@@ -137,6 +135,7 @@ export default function TranslationArea() {
     return () => {
       abortController.abort();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedOriginal]);
 
   const altAbortControllerRef = useRef<AbortController | null>(null);
@@ -156,7 +155,7 @@ export default function TranslationArea() {
       debouncedOriginal,
       translateTo,
       attempt,
-      abortController.signal
+      abortController.signal,
     )
       .then((translatedText) => {
         addAlternativeTranslation(translatedText);
@@ -187,7 +186,7 @@ export default function TranslationArea() {
           usages.map((usage) => ({
             original: usage.original,
             translation: usage.translated,
-          }))
+          })),
         );
       })
       .catch((error) => {
@@ -207,6 +206,7 @@ export default function TranslationArea() {
     setTimeout(() => {
       setIsSwapping(false);
     }, 700);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [translateTo]);
 
   // Проверяем, есть ли перевод в избранном
@@ -215,7 +215,7 @@ export default function TranslationArea() {
       (translation) =>
         translation.targetContent === translatedText &&
         translation.sourceContent === originalText &&
-        translation.targetLanguage === translateTo
+        translation.targetLanguage === translateTo,
     );
     setInFavorites(isInFavorites);
     setFavoriteTranslationId(
@@ -223,8 +223,8 @@ export default function TranslationArea() {
         (translation) =>
           translation.targetContent === translatedText &&
           translation.sourceContent === originalText &&
-          translation.targetLanguage === translateTo
-      )?.id
+          translation.targetLanguage === translateTo,
+      )?.id,
     );
   }, [favoriteTranslations, translatedText, originalText, translateTo]);
 
@@ -260,8 +260,8 @@ export default function TranslationArea() {
   };
 
   return (
-    <div className="relative grid lg:grid-cols-2 lg:p-[1.389vw] lg:pt-[2.083vw] p-[6vw] pt-[16vw] gap-[1.389vw] items-stretch bg-linear-to-r from-[#D9E4D9] to-[#114711] lg:rounded-[1.111vw] rounded-[4vw] -mt-[1.042vw] z-[9]">
-      <div className="lg:hidden absolute top-[4vw] left-[0] w-full">
+    <div className="relative grid lg:grid-cols-2 lg:p-[1.389vw] lg:pt-[2.083vw] p-[6vw] pt-[16vw] gap-[1.389vw] items-stretch bg-linear-to-r from-[#D9E4D9] to-[#114711] lg:rounded-[1.111vw] rounded-[4vw] -mt-[1.042vw] z-9">
+      <div className="lg:hidden absolute top-[4vw] left-0 w-full">
         <LanguageSwitcher
           activeTargetLanguage={translateTo}
           onChange={handleLanguageChange}
@@ -298,7 +298,7 @@ export default function TranslationArea() {
         <button
           onClick={() => fetchAlternativeTranslations(attemptCount + 1)}
           disabled={isFetching || isSwapping}
-          className="bg-white max-lg:text-[3vw] lg:text-[20px] absolute lg:right-[2.083vw] right-[10vw] border-[1px] border-[#B8B8B8] disabled:opacity-50 disabled:cursor-not-allowed lg:bottom-[2.083vw] bottom-[10vw] lg:py-[0.313vw] py-[1.5vw] max-lg:pb-[1vw] lg:px-[0.726vw] px-[3vw] hover:cursor-pointer rounded-full w-max"
+          className="bg-white max-lg:text-[3vw] lg:text-[20px] absolute lg:right-[2.083vw] right-[10vw] border border-[#B8B8B8] disabled:opacity-50 disabled:cursor-not-allowed lg:bottom-[2.083vw] bottom-[10vw] lg:py-[0.313vw] py-[1.5vw] max-lg:pb-[1vw] lg:px-[0.726vw] px-[3vw] hover:cursor-pointer rounded-full w-max"
         >
           Перевести по-другому
         </button>
