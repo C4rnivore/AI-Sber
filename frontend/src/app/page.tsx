@@ -5,6 +5,7 @@ import useUsagesStore from "@/hooks/useUsagesStore";
 import Button from "@/components/ui/Button";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import TranslatorFields from "@/components/ui/TranslatorFields";
 
 export default function Translator() {
   const [translatorMode, setTranslatorMode] = useState<
@@ -19,7 +20,7 @@ export default function Translator() {
   };
 
   return (
-    <div className="relative z-[2] w-full h-full">
+    <div className="relative z-2 w-full h-full">
       <AnimatePresence mode="wait">
         {translatorMode === "collapsed" && (
           <motion.div
@@ -28,7 +29,7 @@ export default function Translator() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="absolute left-[0] top-[50%] translate-y-[-50%] w-[30.556vw]  "
+            className="absolute left-0 top-[50%] translate-y-[-50%] w-[30.556vw]  "
           >
             <h1 className="text-[4.444vw] font-bold leading-[.8] -translate-x-[0.25vw] text-gradient">
               MY.HERITAGE
@@ -45,13 +46,24 @@ export default function Translator() {
               onClick={() => {
                 setTranslatorMode("expanded");
               }}
-              className="text-[1.111vw] bg-gradient text-white py-[0.556vw] px-[1.111vw] rounded-[0.556vw]"
+              className="text-[0.972vw] bg-gradient text-white py-[0.556vw] px-[1.111vw] rounded-[0.556vw]"
             >
               <span>Попробовать</span>
             </Button>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <motion.div
+        animate={{
+          left: translatorMode === "collapsed" ? "50%" : "50%",
+          translateX: translatorMode === "collapsed" ? "0%" : "-50%",
+        }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="w-[73.403vw] h-[30.417vw] absolute top-[50%] translate-y-[-50%] "
+      >
+        <TranslatorFields />
+      </motion.div>
     </div>
   );
 }

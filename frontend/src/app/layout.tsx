@@ -27,7 +27,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
 
-      <body className={`${geist.variable} antialiased h-[100dvh]`}>
+      <body className={`${geist.variable} antialiased h-dvh overflow-x-hidden`}>
         <div className="absolute w-full h-[60dvh] inset-0">
           <Aurora
             colorStops={["#60efff", "#626DE3", "#5EB9FB"]}
