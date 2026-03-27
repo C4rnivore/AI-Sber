@@ -1,4 +1,4 @@
-export type NavigationTabs = "translator" | "favorites" | "history";
+export type NavigationTabs = "translator" | "favorites" | "history" | "storyteller";
 
 export type TranslationResponseDTO = {
   text_to_translated: string;

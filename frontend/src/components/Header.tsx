@@ -1,68 +1,61 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
-import React from "react";
-import { useRouter } from "next/navigation";
-import Button from "./ui/Button";
-import useNavigationStore from "@/hooks/useNavigationStore";
-import clsx from "clsx";
-import ChatIcon from "@/icons/ChatIcon";
-import FavoritesIcon from "@/icons/FavoritesIcon";
-import HistroyIcon from "@/icons/HistroyIcon";
+
+import React, { useState } from "react";
+import NavigationLink from "./ui/NavigationLink";
+import { NavigationTabs } from "@/utils/types";
 
 export default function Header() {
-  const router = useRouter();
-  const { navigationTab, setNavigationTab } = useNavigationStore();
-
-  const handleNavigation = (tab: "translator" | "favorites" | "history") => {
-    setNavigationTab(tab);
-    router.push(tab === "translator" ? "/" : `/${tab}`);
+  const [currentPage, setCurrentPage] = useState<NavigationTabs>("translator");
+  const handleNavigation = (tab: NavigationTabs) => {
+    setCurrentPage(tab);
   };
 
   return (
-    <header className="w-full lg:py-[0.833vw] py-[3vw] flex lg:flex-row flex-col justify-between items-center border-b border-[#B8B8B8] lg:px-[10.417vw] px-[2.5vw] [box-shadow:0_0_5.5_0_#0000001F]">
-      <div className="lg:text-[1.389vw] text-[6vw] text-[#2C734E] max-lg:mb-[2vw]">
-        <span className="font-medium">AI</span> Переводчик
-      </div>
+    <header className="fixed flex items-center gap-[1.389vw] top-[1.111vw] left-1/2 -translate-x-1/2 w-max z-[100] bg-white border backdrop-blur-[24px] p-[0.347vw] pr-[2.778vw] rounded-full">
+      <NavigationLink
+        href="/"
+        active={false}
+        onNavigate={() => handleNavigation("translator")}
+      >
+        <img src="img/logo.png" alt="logo" className="size-[2.222vw]" />
+      </NavigationLink>
 
-      <div className="flex lg:gap-2 gap-[4.5vw]">
-        <Button
-          className={clsx(
-            "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
-            navigationTab === "translator" && "text-[#2C734E]"
-          )}
-          onClick={() => handleNavigation("translator")}
-        >
-          <div className="lg:size-[1.806vw] size-[4vw]">
-            <ChatIcon />
-          </div>
-          Переводчик
-        </Button>
+      <nav>
+        <ul className="flex gap-[1.111vw]">
+          <NavigationLink
+            active={currentPage === "translator"}
+            onNavigate={() => handleNavigation("translator")}
+            href="/"
+          >
+            <li>Переводчик</li>
+          </NavigationLink>
 
-        <Button
-          className={clsx(
-            "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
-            navigationTab === "favorites" && "text-[#2C734E]"
-          )}
-          onClick={() => handleNavigation("favorites")}
-        >
-          <div className="lg:size-[1.806vw] size-[4vw]">
-            <FavoritesIcon />
-          </div>
-          Избранные переводы
-        </Button>
+          <NavigationLink
+            active={currentPage === "favorites"}
+            onNavigate={() => handleNavigation("favorites")}
+            href="/favorites"
+          >
+            <li>Избранное</li>
+          </NavigationLink>
 
-        <Button
-          className={clsx(
-            "lg:text-[1.111vw] text-[3vw] gap-[0.417vw] items-center py-[0.417vw] px-[0.833vw]",
-            navigationTab === "history" && "text-[#2C734E]"
-          )}
-          onClick={() => handleNavigation("history")}
-        >
-          <div className="lg:size-[1.806vw] size-[4vw]">
-            <HistroyIcon />
-          </div>
-          История
-        </Button>
-      </div>
+          <NavigationLink
+            active={currentPage === "history"}
+            onNavigate={() => handleNavigation("history")}
+            href="/history"
+          >
+            <li>История</li>
+          </NavigationLink>
+
+          <NavigationLink
+            active={currentPage === "storyteller"}
+            onNavigate={() => handleNavigation("storyteller")}
+            href="/storyteller"
+          >
+            <li>Чтец сказок</li>
+          </NavigationLink>
+        </ul>
+      </nav>
     </header>
   );
 }
