@@ -6,8 +6,8 @@ import { useState, useEffect } from "react";
  * @param delay - задержка
  * @returns debounced значение
  */
-function useDebouncedValue(value: unknown, delay: number) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+function useDebouncedValue(value: string, delay: number): string {
+  const [debouncedValue, setDebouncedValue] = useState<string>(value);
 
   useEffect(() => {
     const handler = setTimeout(() => {

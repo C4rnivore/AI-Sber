@@ -68,9 +68,11 @@ export interface NavigationStore {
 
 export interface TranslationStore {
   translateTo: "russian" | "nanai";
+  translateFrom: "russian" | "nanai";
   originalText: string;
   translatedText: string;
   setTranslateTo: (translateTo: "russian" | "nanai") => void;
+  setTranslateFrom: (translateFrom: "russian" | "nanai") => void;
   setOriginalText: (originalText: string) => void;
   setTranslatedText: (translatedText: string) => void;
 }

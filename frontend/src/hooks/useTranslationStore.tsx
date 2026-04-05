@@ -10,8 +10,11 @@ import { TranslationStore } from "@/utils/interfaces";
 const useTranslationStore = create<TranslationStore>()(
   persist(
     (set) => ({
-      translateTo: "nanai",
+      translateTo: "russian",
       setTranslateTo: (translateTo) => set({ translateTo }),
+
+      translateFrom: "nanai",
+      setTranslateFrom: (translateFrom) => set({ translateFrom }),
 
       originalText: "",
       setOriginalText: (originalText) => set({ originalText }),
@@ -25,11 +28,16 @@ const useTranslationStore = create<TranslationStore>()(
       partialize: (state) =>
         Object.fromEntries(
           Object.entries(state).filter(([key]) =>
-            ["translateTo", "originalText", "translatedText"].includes(key)
-          )
+            [
+              "translateTo",
+              "translateFrom",
+              "originalText",
+              "translatedText",
+            ].includes(key),
+          ),
         ),
-    }
-  )
+    },
+  ),
 );
 
 export default useTranslationStore;

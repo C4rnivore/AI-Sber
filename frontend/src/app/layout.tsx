@@ -28,12 +28,12 @@ export default function RootLayout({
       </head>
 
       <body className={`${geist.variable} antialiased h-dvh overflow-x-hidden`}>
-        <div className="absolute w-full h-[60dvh] inset-0">
+        <div className="absolute w-full h-[30dvh] inset-0">
           <Aurora
             colorStops={["#60efff", "#626DE3", "#5EB9FB"]}
             blend={1}
             amplitude={0.5}
-            speed={0.5}
+            speed={1}
           />
         </div>
         <Header />

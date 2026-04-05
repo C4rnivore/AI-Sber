@@ -21,6 +21,7 @@ export default function Translator() {
 
   return (
     <div className="relative z-2 w-full h-full">
+      {/* Заголовок и описание */}
       <AnimatePresence mode="wait">
         {translatorMode === "collapsed" && (
           <motion.div
@@ -54,15 +55,25 @@ export default function Translator() {
         )}
       </AnimatePresence>
 
+      {/* Поля для перевода */}
       <motion.div
+        initial={{
+          left: translatorMode === "collapsed" ? "50%" : "50%",
+          translateX: translatorMode === "collapsed" ? "0%" : "-50%",
+          opacity: 0,
+        }}
         animate={{
           left: translatorMode === "collapsed" ? "50%" : "50%",
           translateX: translatorMode === "collapsed" ? "0%" : "-50%",
+          opacity: 1,
         }}
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-[73.403vw] h-[30.417vw] absolute top-[50%] translate-y-[-50%] "
       >
-        <TranslatorFields />
+        <TranslatorFields
+          expanded={translatorMode === "expanded"}
+          onFocus={() => setTranslatorMode("expanded")}
+        />
       </motion.div>
     </div>
   );

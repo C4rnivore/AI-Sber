@@ -1,77 +1,58 @@
-import Button from "@/components/ui/Button";
+"use client";
+
 import SwitchIcon from "@/icons/SwitchIcon";
-import { LanguageSwitcherProps } from "@/utils/interfaces";
-import { useState } from "react";
-import { motion } from "framer-motion";
+import React from "react";
+import useTranslationStore from "@/hooks/useTranslationStore";
+import LanguageDropdown from "../ui/LanguageDropdown";
 
-const LanguageSwitcher = ({
-  activeTargetLanguage,
-  onChange,
-}: LanguageSwitcherProps) => {
-  const [rotation, setRotation] = useState(0);
+export default function LangaugeSwitcher({
+  isTranslating,
+  onLanguagesSwitched,
+}: {
+  onLanguagesSwitched: () => void;
+  isTranslating: boolean;
+}) {
+  const { translateTo, setTranslateTo, translateFrom, setTranslateFrom } =
+    useTranslationStore();
 
-  const handleSwitch = () => {
-    setRotation((prev) => prev + 180);
-    onChange(activeTargetLanguage === "nanai" ? "russian" : "nanai");
+  const SwitchLanguages = () => {
+    setTranslateTo(translateTo === "nanai" ? "russian" : "nanai");
+    setTranslateFrom(translateFrom === "nanai" ? "russian" : "nanai");
+    onLanguagesSwitched();
   };
 
   return (
-    <div className="flex justify-between lg:px-[1.389vw] px-[6vw] relative z-[10]">
-      <motion.div
-        className="lg:w-[36.111vw] w-[28.75vw] flex justify-center items-center lg:text-[1.111vw] text-[3.5vw] bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F] overflow-hidden"
-        key={`left-${activeTargetLanguage}`}
-      >
-        <motion.span
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: 50, opacity: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 25,
-          }}
-        >
-          {activeTargetLanguage === "nanai" ? "Русский" : "Нанайский"}
-        </motion.span>
-      </motion.div>
+    <div className="relative z-50 flex justify-between items-center w-max gap-[2.222vw] bg-[linear-gradient(45deg,#58CFDD30_0%,#90C7F230_50%,#84A9ED30_100%)] backdrop-blur-xl rounded-full border border-[#5ACFDD50] p-[0.494vw]">
+      <LanguageDropdown
+        options={[
+          { value: "nanai", label: "Нанайский" },
+          { value: "russian", label: "Русский" },
+        ]}
+        value={translateFrom}
+        onChange={(value) => setTranslateFrom(value)}
+        disabled={isTranslating}
+      />
 
-      <Button
-        onClick={handleSwitch}
-        className="lg:size-[2.5vw] size-[9vw] items-center justify-center bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F]"
+      <button
+        type="button"
+        onClick={SwitchLanguages}
+        disabled={isTranslating}
+        className="lg:size-[2.308vw] rounded-full flex items-center justify-center bg-white hover:cursor-pointer"
       >
-        <motion.div
-          className="lg:w-[1.25vw] w-[4vw] lg:h-[1.667vw]"
-          animate={{ rotate: rotation }}
-          transition={{
-            type: "spring",
-            stiffness: 200,
-            damping: 20,
-            mass: 1,
-          }}
-        >
+        <div className="lg:size-[0.672vw] -translate-y-[0.1vw]">
           <SwitchIcon />
-        </motion.div>
-      </Button>
+        </div>
+      </button>
 
-      <motion.div
-        className="lg:w-[36.111vw] w-[28.75vw] flex justify-center items-center lg:text-[1.111vw] text-[3.5vw] bg-white rounded-full [box-shadow:0_0_5.5_0_#0000001F] overflow-hidden"
-        key={`right-${activeTargetLanguage}`}
-      >
-        <motion.span
-          initial={{ x: 50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: -50, opacity: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 25,
-          }}
-        >
-          {activeTargetLanguage === "nanai" ? "Нанайский" : "Русский"}
-        </motion.span>
-      </motion.div>
+      <LanguageDropdown
+        options={[
+          { value: "russian", label: "Русский" },
+          { value: "nanai", label: "Нанайский" },
+        ]}
+        value={translateTo}
+        onChange={(value) => setTranslateTo(value)}
+        disabled={isTranslating}
+      />
     </div>
   );
-};
-
-export default LanguageSwitcher;
+}
