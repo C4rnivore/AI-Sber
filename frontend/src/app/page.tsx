@@ -1,27 +1,14 @@
 "use client";
-import useTranslationStore from "@/hooks/useTranslationStore";
-import useAlternativeTranslationsStore from "@/hooks/useAlternativeTranslationsStore";
-import useUsagesStore from "@/hooks/useUsagesStore";
+import useTranslatorModeStore from "@/hooks/useTranslatorModeStore";
 import Button from "@/components/ui/Button";
-import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import TranslatorFields from "@/components/ui/TranslatorFields";
 
 export default function Translator() {
-  const [translatorMode, setTranslatorMode] = useState<
-    "expanded" | "collapsed"
-  >("collapsed");
-
-  const { alternativeTranslations } = useAlternativeTranslationsStore();
-  const { translateTo, setTranslateTo } = useTranslationStore();
-  const { wordUsages, sentencesUsages } = useUsagesStore();
-  const handleLanguageChange = (lang: "nanai" | "russian") => {
-    setTranslateTo(lang);
-  };
+  const { translatorMode, setTranslatorMode } = useTranslatorModeStore();
 
   return (
     <div className="relative z-2 w-full h-full">
-      {/* Заголовок и описание */}
       <AnimatePresence mode="wait">
         {translatorMode === "collapsed" && (
           <motion.div
@@ -44,9 +31,7 @@ export default function Translator() {
               <br /> языками: — быстро, точно и доступно.
             </h2>
             <Button
-              onClick={() => {
-                setTranslatorMode("expanded");
-              }}
+              onClick={() => setTranslatorMode("expanded")}
               className="text-[0.972vw] bg-gradient text-white py-[0.556vw] px-[1.111vw] rounded-[0.556vw]"
             >
               <span>Попробовать</span>
@@ -55,7 +40,6 @@ export default function Translator() {
         )}
       </AnimatePresence>
 
-      {/* Поля для перевода */}
       <motion.div
         initial={{
           left: translatorMode === "collapsed" ? "50%" : "50%",

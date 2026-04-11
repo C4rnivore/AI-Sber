@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import React from "react";
 import TranslationField from "./TranslationField";
+import WordUsagesPanel from "./WordUsagesPanel";
+import AlternativeTranslationsPanel from "./AlternativeTranslationsPanel";
 import LangaugeSwitcher from "../translator/LangaugeSwitcher";
-import useTranslationStore from "@/hooks/useTranslationStore";
-import useDebouncedValue from "@/hooks/useDebouncedValue";
-import { fetchTranslation } from "@/utils/axiosUtils";
-import useAlternativeTranslationsStore from "@/hooks/useAlternativeTranslationsStore";
+import useTranslatorController from "@/hooks/useTranslatorController";
 
 interface TranslatorFieldsProps {
   expanded: boolean;
@@ -18,99 +16,22 @@ export default function TranslatorFields({
 }: TranslatorFieldsProps) {
   const {
     originalText,
-    setOriginalText,
-    translateTo,
-    translateFrom,
-    setTranslatedText,
     translatedText,
-  } = useTranslationStore();
-  const debouncedText = useDebouncedValue(originalText, 500);
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [isAlternativePending, setIsAlternativePending] = useState(false);
-  const [alternativeTranslationsCount, setAlternativeTranslationsCount] =
-    useState(1);
-  const alternativeFetchRef = useRef<AbortController | null>(null);
-  const { addAlternativeTranslation, clearAlternativeTranslations } =
-    useAlternativeTranslationsStore();
-
-  const abortAlternativeFetch = () => {
-    alternativeFetchRef.current?.abort();
-    alternativeFetchRef.current = null;
-  };
-
-  const isTranslationBusy = isTranslating || isAlternativePending;
-
-  useEffect(() => {
-    if (debouncedText === "") {
-      abortAlternativeFetch();
-      setIsAlternativePending(false);
-      setTranslatedText("");
-      setIsTranslating(false);
-      clearAlternativeTranslations();
-      setAlternativeTranslationsCount(1);
-      return;
-    }
-
-    abortAlternativeFetch();
-    setIsAlternativePending(false);
-    clearAlternativeTranslations();
-    setAlternativeTranslationsCount(1);
-
-    const controller = new AbortController();
-    setIsTranslating(true);
-
-    fetchTranslation(debouncedText, translateTo, 1, controller.signal)
-      .then((text) => {
-        if (!controller.signal.aborted) {
-          setTranslatedText(text);
-        }
-      })
-      .catch((err: unknown) => {
-        if (axios.isAxiosError(err) && err.code === "ERR_CANCELED") return;
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setIsTranslating(false);
-          setAlternativeTranslationsCount(1);
-        }
-      });
-
-    return () => controller.abort();
-  }, [
-    debouncedText,
+    translateFrom,
     translateTo,
-    setTranslatedText,
-    clearAlternativeTranslations,
-  ]);
-
-  const fetchAlternativeTranslation = () => {
-    if (isTranslationBusy) return;
-    const count = alternativeTranslationsCount + 1;
-
-    if (count > translatedText.split(" ").length) return;
-
-    abortAlternativeFetch();
-    const controller = new AbortController();
-    alternativeFetchRef.current = controller;
-    setIsAlternativePending(true);
-
-    fetchTranslation(debouncedText, translateTo, count, controller.signal)
-      .then((text) => {
-        if (!controller.signal.aborted) {
-          addAlternativeTranslation(text);
-          setAlternativeTranslationsCount(count);
-        }
-      })
-      .catch((err: unknown) => {
-        if (axios.isAxiosError(err) && err.code === "ERR_CANCELED") return;
-      })
-      .finally(() => {
-        if (alternativeFetchRef.current === controller) {
-          alternativeFetchRef.current = null;
-        }
-        setIsAlternativePending(false);
-      });
-  };
+    debouncedText,
+    isTranslationBusy,
+    alternativeTranslations,
+    showAlternativeButton,
+    canFetchMoreAlternatives,
+    wordUsages,
+    sentencesUsages,
+    isFavorited,
+    setOriginalText,
+    fetchAlternativeTranslation,
+    handleFavoriteToggle,
+    handleTTS,
+  } = useTranslatorController();
 
   return (
     <>
@@ -133,6 +54,7 @@ export default function TranslatorFields({
               value={originalText}
               onValueChange={setOriginalText}
               fieldLanguage={translateFrom}
+              onTTS={handleTTS}
             />
           </div>
 
@@ -144,6 +66,11 @@ export default function TranslatorFields({
               value={translatedText}
               disabled={true}
               fieldLanguage={translateTo}
+              isFavorited={isFavorited}
+              onFavoriteToggle={
+                translatedText ? handleFavoriteToggle : undefined
+              }
+              onTTS={handleTTS}
             />
             {isTranslationBusy && (
               <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[1.111vw] bg-white/55 backdrop-blur-[2px] pointer-events-none">
@@ -152,14 +79,10 @@ export default function TranslatorFields({
                 </span>
               </div>
             )}
-            {translatedText.split(" ").length > 1 && (
+            {showAlternativeButton && (
               <button
                 onClick={fetchAlternativeTranslation}
-                disabled={
-                  isTranslationBusy ||
-                  alternativeTranslationsCount ===
-                    translatedText.split(" ").length
-                }
+                disabled={!canFetchMoreAlternatives}
                 className="absolute bottom-[1.111vw] right-[1.111vw] text-[0.833vw] text-[#00000070] hover:cursor-pointer"
               >
                 Перевести по-другому
@@ -174,6 +97,17 @@ export default function TranslatorFields({
           <strong>Всегда дополнительно проверяйте важную информацию.</strong>
         </span>
       </div>
+
+      {expanded && (
+        <WordUsagesPanel
+          word={debouncedText}
+          wordUsages={wordUsages}
+          sentencesUsages={sentencesUsages}
+        />
+      )}
+      {expanded && (
+        <AlternativeTranslationsPanel translations={alternativeTranslations} />
+      )}
     </>
   );
 }
