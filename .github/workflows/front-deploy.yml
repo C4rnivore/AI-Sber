@@ -37,8 +37,11 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            mkdir -p ${{ secrets.SSH_TARGET_DIR }}
-            rm -rf ${{ secrets.SSH_TARGET_DIR }}/*
+            TARGET="${{ secrets.SSH_TARGET_DIR }}"
+            mkdir -p "$TARGET"
+            find "$TARGET" -mindepth 1 -delete
+          script_stop: true
+          debug: false
 
       - name: Upload build
         uses: appleboy/scp-action@v1
