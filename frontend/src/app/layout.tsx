@@ -27,8 +27,10 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
 
-      <body className={`${geist.variable} antialiased h-dvh overflow-x-hidden`}>
-        <div className="absolute w-full h-[30dvh] inset-0">
+      <body
+        className={`${geist.variable} antialiased lg:h-full h-max overflow-x-hidden`}
+      >
+        <div className="absolute w-full lg:h-[30dvh] h-[50dvh] lg:inset-0 bottom-0 max-md:rotate-180">
           <Aurora
             colorStops={["#60efff", "#626DE3", "#5EB9FB"]}
             blend={1}
@@ -38,7 +40,9 @@ export default function RootLayout({
         </div>
         <Header />
 
-        <main className="lg:mx-[10.417vw] mx-[7vw] h-full">{children}</main>
+        <main className="lg:mx-[10.417vw] mx-[4.444vw] lg:h-screen h-full ">
+          {children}
+        </main>
       </body>
     </html>
   );

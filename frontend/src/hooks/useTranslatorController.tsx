@@ -28,6 +28,8 @@ export default function useTranslatorController() {
     translateFrom,
     setTranslatedText,
     translatedText,
+    setTranslateFrom,
+    setTranslateTo,
   } = useTranslationStore();
 
   const {
@@ -119,7 +121,13 @@ export default function useTranslatorController() {
       });
 
     return () => controller.abort();
-  }, [debouncedText, translateTo, setTranslatedText, clearAlternativeTranslations, addHistoryTranslation]);
+  }, [
+    debouncedText,
+    translateTo,
+    setTranslatedText,
+    clearAlternativeTranslations,
+    addHistoryTranslation,
+  ]);
 
   // --- Alternative translations ---
 
@@ -170,10 +178,10 @@ export default function useTranslatorController() {
   const isCached = isSingleWord && cachedUsages.word === trimmedWord;
 
   const [wordUsages, setWordUsages] = useState<string[]>(
-    isCached ? cachedUsages.wordUsages : [],
+    isCached ? cachedUsages.wordUsages : []
   );
   const [sentencesUsages, setSentencesUsages] = useState<SentenceUsage[]>(
-    isCached ? cachedUsages.sentencesUsages : [],
+    isCached ? cachedUsages.sentencesUsages : []
   );
 
   useEffect(() => {
@@ -220,7 +228,7 @@ export default function useTranslatorController() {
 
       if (cachedAudios.current[text]) {
         const speech = new Audio(
-          "data:audio/wav;base64," + cachedAudios.current[text],
+          "data:audio/wav;base64," + cachedAudios.current[text]
         );
         speech.addEventListener("loadeddata", () => speech.play());
         return;
@@ -244,15 +252,14 @@ export default function useTranslatorController() {
           ttsFetchingRef.current = false;
         });
     },
-    [],
+    []
   );
 
   // --- Favorites ---
 
   const favoriteMatch = favoriteTranslations.find(
     (fav) =>
-      fav.sourceContent === originalText &&
-      fav.targetContent === translatedText,
+      fav.sourceContent === originalText && fav.targetContent === translatedText
   );
   const isFavorited = !!favoriteMatch;
 
@@ -302,5 +309,7 @@ export default function useTranslatorController() {
     fetchAlternativeTranslation,
     handleFavoriteToggle,
     handleTTS,
+    setTranslateFrom,
+    setTranslateTo,
   };
 }

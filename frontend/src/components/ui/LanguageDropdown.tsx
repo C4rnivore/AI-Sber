@@ -7,6 +7,7 @@ interface LanguageDropdownProps {
   value: string;
   onChange: (value: "russian" | "nanai") => void;
   disabled?: boolean;
+  className?: string;
 }
 
 function LanguageFlag({ code }: { code: "russian" | "nanai" }) {
@@ -34,7 +35,7 @@ function LanguageFlag({ code }: { code: "russian" | "nanai" }) {
       <span
         className={cn(
           sizeClass,
-          "bg-[#F4D03F] ring-1 ring-black/10 flex items-center justify-center",
+          "bg-[#F4D03F] ring-1 ring-black/10 flex items-center justify-center"
         )}
         aria-hidden
       >
@@ -69,6 +70,7 @@ function LanguageDropdown({
   value,
   onChange,
   disabled,
+  className,
 }: LanguageDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -94,15 +96,15 @@ function LanguageDropdown({
   }, [isOpen]);
 
   const rowClass =
-    "flex w-[10.139vw] items-center gap-[0.556vw] lg:px-[0.417vw] px-2 lg:py-[0.417vw] lg:pr-[0.617vw] text-left";
+    "flex lg:w-[10.139vw] w-[35.667vw] items-center gap-[0.556vw] lg:px-[0.417vw] px-2 lg:py-[0.417vw] py-[1.667vw] lg:pr-[0.617vw] text-left";
 
   return (
-    <div ref={rootRef} className={cn("relative", isOpen && "z-200")}>
+    <div ref={rootRef} className={cn("relative", isOpen && "z-200", className)}>
       <button
         type="button"
         className={cn(
           rowClass,
-          "min-w-0 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:cursor-pointer",
+          "min-w-0 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:cursor-pointer"
         )}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
@@ -121,9 +123,9 @@ function LanguageDropdown({
         <div
           className={cn(
             "absolute left-0 top-full mt-[0.278vw] min-w-full w-max z-5",
-            "rounded-[0.972vw] bg-white/95 backdrop-blur-sm",
+            "lg:rounded-[0.972vw] rounded-[3.333vw] bg-white/95 backdrop-blur-sm",
             "shadow-[0_4px_20px_rgba(0,0,0,0.12)] ring-1 ring-black/5",
-            "overflow-hidden py-[0.278vw]",
+            "overflow-hidden py-[0.278vw]"
           )}
           role="presentation"
         >
@@ -140,7 +142,7 @@ function LanguageDropdown({
                       rowClass,
                       isSelected
                         ? "opacity-45 cursor-default"
-                        : "cursor-pointer hover:bg-black/4 text-neutral-900",
+                        : "cursor-pointer hover:bg-black/4 text-neutral-900"
                     )}
                     onClick={() => {
                       if (!isSelected) onChange(option.value);

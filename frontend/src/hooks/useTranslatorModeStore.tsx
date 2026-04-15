@@ -15,8 +15,8 @@ const useTranslatorModeStore = create<TranslatorModeStore>()(
     {
       name: "translator-mode-store",
       storage: createJSONStorage(() => sessionStorage),
-    },
-  ),
+    }
+  )
 );
 
 export default useTranslatorModeStore;
