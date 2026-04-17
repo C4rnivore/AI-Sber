@@ -9,12 +9,12 @@ import { useMediaQuery } from "usehooks-ts";
 export default function Translator() {
   const { translatorMode, setTranslatorMode } = useTranslatorModeStore();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const showHero = isMobile || translatorMode === "collapsed";
+  const hideHero = isMobile || translatorMode === "collapsed";
 
   return (
     <div className="relative z-2 w-full h-full">
       <AnimatePresence mode="wait">
-        {showHero && (
+        {hideHero && (
           <motion.div
             key="hero"
             initial={{ opacity: 0, y: -30 }}
@@ -56,13 +56,13 @@ export default function Translator() {
 
       <motion.div
         initial={{
-          left: showHero ? "50%" : "50%",
-          translateX: showHero ? "0%" : "-50%",
+          left: hideHero ? "50%" : "50%",
+          translateX: hideHero ? "0%" : "-50%",
           opacity: 0,
         }}
         animate={{
-          left: showHero ? "50%" : "50%",
-          translateX: showHero ? "0%" : "-50%",
+          left: hideHero ? "50%" : "50%",
+          translateX: hideHero ? "0%" : "-50%",
           opacity: 1,
         }}
         transition={{ duration: 0.4, ease: "easeOut" }}

@@ -6,9 +6,7 @@ import {
   TextToSpeechResponseDTO,
 } from "./types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "localhost";
-const API_PORT = process.env.NEXT_PUBLIC_API_PORT || "5174";
-const API_BASE = `${API_URL}:${API_PORT}`;
+const API_BASE = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_PROD_SERVER_URL : (process.env.NEXT_PUBLIC_SERVER_URL || "localhost:3001");
 
 export const buildTranslationUrl = (
   originalText: string,
