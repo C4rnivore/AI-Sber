@@ -6,7 +6,7 @@ import {
   TextToSpeechResponseDTO,
 } from "./types";
 
-const API_BASE = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_PROD_SERVER_URL : (process.env.NEXT_PUBLIC_SERVER_URL || "localhost:3001");
+const API_BASE = process.env.NODE_ENV === "production" ? "https://api.ai-heritage.ru" : "http://localhost:3001";
 
 export const buildTranslationUrl = (
   originalText: string,
