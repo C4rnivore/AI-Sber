@@ -73,7 +73,7 @@ export default function TranslatorFields({
             type="button"
             onClick={SwitchLanguages}
             disabled={isTranslationBusy}
-            className="lg:size-[2.308vw] z-1 shadow-[2px_2px_10px_rgba(0,0,0,0.1)] size-[11.944vw] max-md:rotate-90 absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] rounded-full flex items-center justify-center bg-white hover:cursor-pointer"
+            className="lg:hidden  lg:size-[2.308vw] z-1 shadow-[2px_2px_10px_rgba(0,0,0,0.1)] size-[11.944vw] max-md:rotate-90 absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] rounded-full flex items-center justify-center bg-white hover:cursor-pointer"
           >
             <div className="lg:size-[0.672vw] size-[3.889vw] lg:-translate-y-[0.1vw] -translate-y-[0.5vw]">
               <SwitchIcon />
