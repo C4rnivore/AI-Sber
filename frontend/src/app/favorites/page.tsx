@@ -19,7 +19,7 @@ export default function Favorites() {
 
       if (cachedAudios.current[text]) {
         const speech = new Audio(
-          "data:audio/wav;base64," + cachedAudios.current[text],
+          "data:audio/wav;base64," + cachedAudios.current[text]
         );
         speech.addEventListener("loadeddata", () => speech.play());
         return;
@@ -43,18 +43,18 @@ export default function Favorites() {
           ttsFetchingRef.current = false;
         });
     },
-    [],
+    []
   );
 
   return (
-    <div className="pt-[4.167vw] max-w-[60vw] mx-auto">
-      <h1 className="text-[2.5vw] text-center mb-[2.222vw] italic text-gradient">
+    <div className="lg:pt-[4.167vw] pt-[12vw] lg:max-w-[60vw] max-w-[90vw] mx-auto">
+      <h1 className="lg:text-[2.5vw] text-[6vw] text-center lg:mb-[2.222vw] mb-[5vw] text-gradient">
         Избранные переводы
       </h1>
 
-      <div className="w-full flex flex-col-reverse gap-[1.389vw]">
+      <div className="w-full flex flex-col-reverse lg:gap-[1.389vw] gap-[4vw]">
         {favoriteTranslations.length === 0 ? (
-          <p className="z-1 text-[1.111vw] text-center text-gray-400">
+          <p className="z-1 lg:text-[1.111vw] text-[3.5vw] text-center text-gray-400">
             Избранные переводы пусты
           </p>
         ) : (

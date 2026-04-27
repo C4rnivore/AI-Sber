@@ -44,24 +44,24 @@ export default function WordUsagesPanel({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="mt-[1.111vw] rounded-[1.667vw] bg-[linear-gradient(45deg,#58CFDD20_0%,#90C7F220_50%,#84A9ED20_100%)] p-[1.111vw]"
+          className="lg:mt-[1.111vw] mt-[3vw] lg:rounded-[1.667vw] rounded-[5vw] bg-[linear-gradient(45deg,#58CFDD20_0%,#90C7F220_50%,#84A9ED20_100%)] lg:p-[1.111vw] p-[3vw]"
         >
-          <div className="bg-white border border-[#96969650] rounded-[1.528vw] p-[1.667vw]">
-            <div className="flex gap-[2.222vw]">
+          <div className="bg-white border border-[#96969650] lg:rounded-[1.528vw] rounded-[4.5vw] lg:p-[1.667vw] p-[4vw]">
+            <div className="flex lg:flex-row flex-col lg:gap-[2.222vw] gap-[5vw]">
               {sentencesUsages.length > 0 && (
                 <div className="flex-1">
-                  <h3 className="text-[1.111vw] font-semibold mb-[1.111vw]">
+                  <h3 className="lg:text-[1.111vw] text-[3.5vw] font-semibold lg:mb-[1.111vw] mb-[3vw]">
                     Примеры использования
                   </h3>
-                  <div className="space-y-[1.111vw]">
+                  <div className="lg:space-y-[1.111vw] space-y-[3vw]">
                     {sentencesUsages.slice(0, MAX_ITEMS).map((sentence, i) => (
-                      <div key={i} className="flex items-start gap-[0.694vw]">
-                        <ChatIcon className="size-[1.389vw] text-[#555] shrink-0 mt-[0.139vw]" />
+                      <div key={i} className="flex items-start lg:gap-[0.694vw] gap-[2vw]">
+                        <ChatIcon className="lg:size-[1.389vw] size-[4.5vw] text-[#555] shrink-0 lg:mt-[0.139vw] mt-[0.5vw]" />
                         <div>
-                          <p className="text-[0.972vw] leading-snug">
+                          <p className="lg:text-[0.972vw] text-[3.2vw] leading-snug">
                             {highlightWord(sentence.original, trimmed)}
                           </p>
-                          <p className="text-[0.833vw] text-[#96969650] leading-snug">
+                          <p className="lg:text-[0.833vw] text-[2.8vw] text-[#96969650] leading-snug">
                             {sentence.translated}
                           </p>
                         </div>
@@ -73,14 +73,14 @@ export default function WordUsagesPanel({
 
               {wordUsages.length > 0 && (
                 <div className="flex-1">
-                  <h3 className="text-[1.111vw] font-semibold mb-[1.111vw]">
+                  <h3 className="lg:text-[1.111vw] text-[3.5vw] font-semibold lg:mb-[1.111vw] mb-[3vw]">
                     Словарь
                   </h3>
-                  <div className="space-y-[0.833vw]">
+                  <div className="lg:space-y-[0.833vw] space-y-[2.5vw]">
                     {wordUsages.slice(0, MAX_ITEMS).map((w, i) => (
-                      <div key={i} className="flex items-center gap-[0.694vw]">
-                        <DictionaryIcon className="size-[1.389vw] text-[#555] shrink-0" />
-                        <span className="text-[0.972vw]">{w}</span>
+                      <div key={i} className="flex items-center lg:gap-[0.694vw] gap-[2vw]">
+                        <DictionaryIcon className="lg:size-[1.389vw] size-[4.5vw] text-[#555] shrink-0" />
+                        <span className="lg:text-[0.972vw] text-[3.2vw]">{w}</span>
                       </div>
                     ))}
                   </div>

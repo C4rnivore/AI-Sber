@@ -94,8 +94,8 @@ export default function TranslatorFields({
               onTranslateLanguageChange={setTranslateTo}
             />
             {isTranslationBusy && (
-              <div className=" absolute inset-0 z-10 lg:flex items-center justify-center rounded-[1.111vw] bg-white/55 backdrop-blur-[2px] pointer-events-none">
-                <span className="text-[1.111vw] font-medium text-[#4a5568]">
+              <div className="absolute inset-0 z-10 flex items-center justify-center lg:rounded-[1.111vw] rounded-[5.833vw] bg-white/55 backdrop-blur-[2px] pointer-events-none">
+                <span className="lg:text-[1.111vw] text-[3.5vw] font-medium text-[#4a5568]">
                   Переводим
                 </span>
               </div>
@@ -104,7 +104,7 @@ export default function TranslatorFields({
               <button
                 onClick={fetchAlternativeTranslation}
                 disabled={!canFetchMoreAlternatives}
-                className="absolute bottom-[1.111vw] right-[1.111vw] text-[0.833vw] text-[#00000070] hover:cursor-pointer"
+                className="absolute lg:bottom-[1.111vw] bottom-[3vw] lg:right-[1.111vw] right-[3.5vw] lg:text-[0.833vw] text-[2.8vw] text-[#00000070] hover:cursor-pointer"
               >
                 Перевести по-другому
               </button>
@@ -119,16 +119,20 @@ export default function TranslatorFields({
         </span>
       </div>
 
-      {expanded && (
-        <WordUsagesPanel
-          word={debouncedText}
-          wordUsages={wordUsages}
-          sentencesUsages={sentencesUsages}
-        />
-      )}
-      {expanded && (
-        <AlternativeTranslationsPanel translations={alternativeTranslations} />
-      )}
+      <div className="max-md:mb-[35vw]">
+        {expanded && (
+          <WordUsagesPanel
+            word={debouncedText}
+            wordUsages={wordUsages}
+            sentencesUsages={sentencesUsages}
+          />
+        )}
+        {expanded && (
+          <AlternativeTranslationsPanel
+            translations={alternativeTranslations}
+          />
+        )}
+      </div>
     </>
   );
 }

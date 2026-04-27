@@ -72,7 +72,7 @@ export default function TranslationField({
 
       {inputLimitation && !props.disabled && (
         <span
-          className={`absolute lg:bottom-[0.556vw] lg:top-auto bottom-auto top-[2.222vw] lg:right-[1.111vw] right-[3.222vw] lg:text-[0.672vw] text-[3.333vw] ${
+          className={`absolute lg:bottom-[0.556vw] lg:top-auto bottom-auto top-[3.5vw] lg:right-[1.111vw] right-[3.5vw] lg:text-[0.672vw] text-[3.333vw] ${
             isNearLimit ? "text-red-500" : "text-[#96969650]"
           } select-none`}
         >
@@ -80,7 +80,7 @@ export default function TranslationField({
         </span>
       )}
 
-      <div className="flex absolute lg:bottom-[1.111vw] bottom-[3.222vw] lg:left-[1.111vw] left-[3.222vw] items-center justify-center gap-2">
+      <div className="flex absolute lg:bottom-[1.111vw] bottom-[2.7vw] lg:left-[1.111vw] left-[3.5vw] items-center justify-center gap-2">
         <button
           className="hover:cursor-pointer lg:size-[1.528vw] size-[6.111vw] flex items-center justify-center "
           onClick={handleTTSClick}
@@ -111,7 +111,7 @@ export default function TranslationField({
 
       {onFavoriteToggle && (
         <button
-          className="absolute top-[0.833vw] right-[0.833vw] hover:cursor-pointer size-[1.528vw] flex items-center justify-center"
+          className="absolute lg:top-[0.833vw] top-[3.5vw] lg:right-[0.833vw] right-[3.5vw] hover:cursor-pointer lg:size-[1.528vw] size-[5vw] flex items-center justify-center"
           onClick={onFavoriteToggle}
         >
           <AnimatePresence mode="wait">
@@ -124,7 +124,7 @@ export default function TranslationField({
                 transition={{ duration: 0.2 }}
                 className="text-[#DAE5F9]"
               >
-                <HeartIcon className="size-[1.528vw]" />
+                <HeartIcon className="lg:size-[1.528vw] size-[5vw]" />
               </motion.div>
             ) : (
               <motion.div
@@ -135,7 +135,7 @@ export default function TranslationField({
                 transition={{ duration: 0.2 }}
                 className="text-[#969696]"
               >
-                <HeartEmptyIcon className="size-[1.528vw]" />
+                <HeartEmptyIcon className="lg:size-[1.528vw] size-[5vw]" />
               </motion.div>
             )}
           </AnimatePresence>
