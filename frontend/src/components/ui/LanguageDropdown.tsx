@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import ChevronIcon from "@/icons/ChevronIcon";
 import { cn } from "@/lib/utils";
 import { useState, useRef, useId, useEffect } from "react";
@@ -17,42 +18,23 @@ function LanguageFlag({ code }: { code: "russian" | "nanai" }) {
   if (code === "russian") {
     return (
       <span className={cn(sizeClass, "ring-1 ring-black/5")} aria-hidden>
-        <svg
-          viewBox="0 0 24 24"
-          className="size-full"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect width="24" height="8" y="0" fill="#FFFFFF" />
-          <rect width="24" height="8" y="8" fill="#0039A6" />
-          <rect width="24" height="8" y="16" fill="#D52B1E" />
-        </svg>
+        <img
+          src="/flags/ru.png"
+          alt="nanai flag"
+          className="size-full object-cover"
+        />
       </span>
     );
   }
 
   if (code === "nanai") {
     return (
-      <span
-        className={cn(
-          sizeClass,
-          "bg-[#F4D03F] ring-1 ring-black/10 flex items-center justify-center"
-        )}
-        aria-hidden
-      >
-        <svg
-          viewBox="0 0 24 24"
-          className="lg:size-[0.833vw] size-3"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12 4v16M8 8c0 2.5 2 4 4 4s4-1.5 4-4"
-            stroke="#1a1a1a"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+      <span className={cn(sizeClass)} aria-hidden>
+        <img
+          src="/flags/nanai.png"
+          alt="nanai flag"
+          className="size-full object-cover"
+        />
       </span>
     );
   }

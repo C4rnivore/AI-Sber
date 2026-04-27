@@ -66,7 +66,7 @@ export default function Translator() {
           opacity: 1,
         }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="lg:w-[73.403vw] w-full lg:h-[30.417vw] h-auto lg:absolute lg:top-[50%] lg:translate-y-[-50%] max-md:mt-[16.667vw]"
+        className="lg:w-[73.403vw] w-full lg:h-[30.417vw] h-auto lg:absolute lg:top-[50%] lg:translate-y-[-50%] max-md:mt-[5.667vw]"
       >
         <TranslatorFields
           expanded={translatorMode === "expanded"}

@@ -22,7 +22,7 @@ function CopyButton({ text }: { text: string }) {
 
   return (
     <button
-      className="relative hover:cursor-pointer size-[1.528vw] flex items-center justify-center text-[#96969680] hover:text-[#969696]"
+      className="relative hover:cursor-pointer lg:size-[1.528vw] size-[5vw] flex items-center justify-center text-[#96969680] hover:text-[#969696]"
       onClick={handleCopy}
     >
       <CopyIcon />
@@ -33,7 +33,7 @@ function CopyButton({ text }: { text: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute top-[-1.5vw] left-0 text-[0.694vw] text-[#555] whitespace-nowrap"
+            className="absolute lg:top-[-1.5vw] top-[-5vw] left-0 lg:text-[0.694vw] text-[2.5vw] text-[#555] whitespace-nowrap"
           >
             Скопировано
           </motion.div>
@@ -55,18 +55,18 @@ function LanguagePanel({
   const label = language === "nanai" ? "Нанайский" : "Русский";
 
   return (
-    <div className="flex-1 bg-white rounded-[1.389vw] border border-[#96969630] p-[1.111vw] flex flex-col justify-between min-h-[10vw]">
+    <div className="flex-1 bg-white lg:rounded-[1.389vw] rounded-[4vw] border border-[#96969630] lg:p-[1.111vw] p-[3.5vw] flex flex-col justify-between lg:min-h-[10vw] min-h-[25vw]">
       <div>
-        <span className="text-gradient text-[0.972vw] font-semibold">
+        <span className="text-gradient lg:text-[0.972vw] text-[3.2vw] font-semibold">
           {label}
         </span>
-        <p className="mt-[0.556vw] text-[0.972vw] leading-relaxed text-[#333] whitespace-pre-wrap">
+        <p className="lg:mt-[0.556vw] mt-[1.5vw] lg:text-[0.972vw] text-[3.2vw] leading-relaxed text-[#333] whitespace-pre-wrap">
           {text}
         </p>
       </div>
-      <div className="flex items-center gap-[0.417vw] mt-[0.833vw]">
+      <div className="flex items-center lg:gap-[0.417vw] gap-[1.5vw] lg:mt-[0.833vw] mt-[2.5vw]">
         <button
-          className="hover:cursor-pointer size-[1.528vw] flex items-center justify-center text-[#96969680] hover:text-[#969696]"
+          className="hover:cursor-pointer lg:size-[1.528vw] size-[5vw] flex items-center justify-center text-[#96969680] hover:text-[#969696]"
           onClick={() => onTTS(text, language)}
         >
           <SpeakerIcon />
@@ -83,8 +83,8 @@ export default function FavoriteItem({
   onTTS,
 }: FavoriteCardProps) {
   return (
-    <div className="z-1 rounded-[1.667vw] bg-[linear-gradient(45deg,#58CFDD20_0%,#90C7F220_50%,#84A9ED20_100%)] p-[0.556vw] border border-[#5ACFDD50]">
-      <div className="flex gap-[0.556vw]">
+    <div className="z-1 lg:rounded-[1.667vw] rounded-[5vw] bg-[linear-gradient(45deg,#58CFDD20_0%,#90C7F220_50%,#84A9ED20_100%)] lg:p-[0.556vw] p-[2vw] border border-[#5ACFDD50]">
+      <div className="flex lg:flex-row flex-col lg:gap-[0.556vw] gap-[2vw]">
         <LanguagePanel
           language={item.sourceLanguage}
           text={item.sourceContent}
@@ -98,10 +98,10 @@ export default function FavoriteItem({
             onTTS={onTTS}
           />
           <button
-            className="absolute top-[0.833vw] right-[0.833vw] hover:cursor-pointer size-[1.528vw] flex items-center justify-center text-[#5ACFDD] hover:text-[#4ab8c6] transition-colors"
+            className="absolute lg:top-[0.833vw] top-[2.5vw] lg:right-[0.833vw] right-[2.5vw] hover:cursor-pointer lg:size-[1.528vw] size-[5vw] flex items-center justify-center text-[#5ACFDD] hover:text-[#4ab8c6] transition-colors"
             onClick={() => onRemove(item.id)}
           >
-            <HeartIcon className="size-[1.528vw]" />
+            <HeartIcon className="lg:size-[1.528vw] size-[5vw]" />
           </button>
         </div>
       </div>

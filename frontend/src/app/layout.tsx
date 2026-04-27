@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import Header from "@/components/Header";
 import Aurora from "@/components/bits/Aurora/Aurora";
+import InstallPrompt from "@/components/ui/InstallPrompt";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -30,7 +31,7 @@ export default function RootLayout({
       <body
         className={`${geist.variable} antialiased lg:h-full h-max overflow-x-hidden`}
       >
-        <div className="absolute w-full lg:h-[30dvh] h-[50dvh] lg:inset-0 bottom-0 max-md:rotate-180">
+        <div className="absolute max-md:fixed w-full lg:h-[30dvh] h-[50dvh] lg:inset-0 bottom-0 max-md:rotate-180">
           <Aurora
             colorStops={["#60efff", "#626DE3", "#5EB9FB"]}
             blend={1}
@@ -39,6 +40,7 @@ export default function RootLayout({
           />
         </div>
         <Header />
+        <InstallPrompt />
 
         <main className="lg:mx-[10.417vw] mx-[4.444vw] lg:h-screen h-full ">
           {children}
