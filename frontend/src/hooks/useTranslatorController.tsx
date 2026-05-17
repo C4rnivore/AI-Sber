@@ -8,6 +8,8 @@ import useDebouncedValue from "@/hooks/useDebouncedValue";
 import {
   fetchTranslation,
   fetchTextToSpeech,
+  fetchSpeechToText,
+  fetchOCR,
   fetchWordUsages,
   fetchSentencesUsages,
 } from "@/utils/axiosUtils";
@@ -255,6 +257,30 @@ export default function useTranslatorController() {
     []
   );
 
+  // --- STT ---
+
+  const handleSTT = useCallback(
+    async (audioBlob: Blob, language: "russian" | "nanai") => {
+      const text = await fetchSpeechToText(audioBlob, language);
+      if (text) {
+        setOriginalText(text);
+      }
+    },
+    [setOriginalText],
+  );
+
+  // --- OCR ---
+
+  const handleOCR = useCallback(
+    async (imageFile: File) => {
+      const text = await fetchOCR(imageFile);
+      if (text) {
+        setOriginalText(text);
+      }
+    },
+    [setOriginalText],
+  );
+
   // --- Favorites ---
 
   const favoriteMatch = favoriteTranslations.find(
@@ -309,6 +335,8 @@ export default function useTranslatorController() {
     fetchAlternativeTranslation,
     handleFavoriteToggle,
     handleTTS,
+    handleSTT,
+    handleOCR,
     setTranslateFrom,
     setTranslateTo,
   };
