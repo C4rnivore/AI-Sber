@@ -1,60 +1,70 @@
 "use client";
 
+import { useCallback, useRef } from "react";
 import useHistoryStore from "@/hooks/useHistoryStore";
-import HistoryItem from "../../components/history/HistoryItem";
+import HistoryItem from "@/components/history/HistoryItem";
+import { fetchTextToSpeech } from "@/utils/axiosUtils";
+import axios from "axios";
 
 export default function History() {
   const { historyTranslations, removeHistoryTranslation } = useHistoryStore();
 
+  const ttsFetchingRef = useRef(false);
+  const cachedAudios = useRef<Record<string, string>>({});
+
+  const handleTTS = useCallback(
+    (text: string, language: "russian" | "nanai") => {
+      if (ttsFetchingRef.current || !text) return;
+
+      if (cachedAudios.current[text]) {
+        const speech = new Audio(
+          "data:audio/wav;base64," + cachedAudios.current[text]
+        );
+        speech.addEventListener("loadeddata", () => speech.play());
+        return;
+      }
+
+      ttsFetchingRef.current = true;
+      const controller = new AbortController();
+
+      fetchTextToSpeech(text, language, controller.signal)
+        .then((audio) => {
+          if (!controller.signal.aborted && audio) {
+            const speech = new Audio("data:audio/wav;base64," + audio);
+            speech.addEventListener("loadeddata", () => speech.play());
+            cachedAudios.current[text] = audio;
+          }
+        })
+        .catch((err: unknown) => {
+          if (axios.isAxiosError(err) && err.code === "ERR_CANCELED") return;
+        })
+        .finally(() => {
+          ttsFetchingRef.current = false;
+        });
+    },
+    []
+  );
+
   return (
-    <div className="pt-[4.167vw]">
-      <h1 className="lg:text-[1.667vw] text-[4vw] text-[#2C734E] lg:mb-[0.972vw] mb-[3vw] font-semibold">
+    <div className="lg:pt-[4.167vw] pt-[12vw] lg:max-w-[60vw] max-w-[90vw] mx-auto max-md:pb-[35vw]">
+      <h1 className="lg:text-[2.5vw] text-[6vw] text-center lg:mb-[2.222vw] mb-[5vw] text-gradient">
         История переводов
       </h1>
+
       <div className="w-full flex flex-col-reverse lg:gap-[1.389vw] gap-[4vw]">
         {historyTranslations.length === 0 ? (
-          <p className="lg:text-[1.111vw] text-[3.5vw] text-gray-500">
+          <p className="z-1 lg:text-[1.111vw] text-[3.5vw] text-center text-gradient">
             История переводов пуста
           </p>
         ) : (
-          historyTranslations.map((item) => {
-            return (
-              <div
-                key={item.id}
-                className="flex flex-col lg:gap-[0.694vw] gap-[2vw]"
-              >
-                <div className="flex max-lg:flex-col lg:gap-[1.389vw] gap-[-2px]">
-                  <HistoryItem
-                    className="max-lg:rounded-b-[0]"
-                    sourceLanguage={item.sourceLanguage}
-                    content={item.sourceText}
-                  />
-                  <HistoryItem
-                    className="max-lg:translate-y-[-1px] max-lg:rounded-t-[0]"
-                    sourceLanguage={item.targetLanguage}
-                    content={item.targetText}
-                  />
-                </div>
-                <div className="flex justify-between items-center lg:px-[0.5vw] px-[2vw]">
-                  <span className="lg:text-[0.972vw] text-[3vw] text-gray-500">
-                    {new Date(item.translatedAt).toLocaleString("ru-RU", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                  <button
-                    onClick={() => removeHistoryTranslation(item.id)}
-                    className="text-red-600 hover:text-red-800 lg:text-[0.972vw] text-[3vw] font-semibold lg:px-[0.694vw] px-[2vw] lg:py-[0.347vw] py-[1vw] hover:bg-red-50 rounded transition-colors"
-                  >
-                    Удалить
-                  </button>
-                </div>
-              </div>
-            );
-          })
+          historyTranslations.map((item) => (
+            <HistoryItem
+              key={item.id}
+              item={item}
+              onRemove={removeHistoryTranslation}
+              onTTS={handleTTS}
+            />
+          ))
         )}
       </div>
     </div>
