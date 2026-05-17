@@ -1,5 +1,5 @@
 import * as React from "react";
-const CameraIcon = (props) => (
+const CameraIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     viewBox="0 0 36 36"
     fill="none"
