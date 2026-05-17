@@ -9,7 +9,7 @@ class TTSService:
     """Сервис для преобразования текста в речь"""
 
     def __init__(self):
-        print("Загрузка моделей...")
+        print("Загрузка моделей TTS...")
         self.models = {}
         self.tokenizers = {}
 
