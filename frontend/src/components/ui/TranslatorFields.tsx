@@ -32,6 +32,8 @@ export default function TranslatorFields({
     fetchAlternativeTranslation,
     handleFavoriteToggle,
     handleTTS,
+    handleSTT,
+    handleOCR,
     setTranslateFrom,
     setTranslateTo,
   } = useTranslatorController();
@@ -63,6 +65,8 @@ export default function TranslatorFields({
               onValueChange={setOriginalText}
               fieldLanguage={translateFrom}
               onTTS={handleTTS}
+              onSTT={handleSTT}
+              onOCR={handleOCR}
               onTranslateLanguageChange={setTranslateFrom}
             />
           </div>
