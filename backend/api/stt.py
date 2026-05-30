@@ -2,7 +2,7 @@ import tempfile
 from fastapi import HTTPException, APIRouter,UploadFile, File
 from fastapi.responses import JSONResponse
 from schemas.base import BaseModelRead
-from translation.stt import stt_service
+from translation.stt import get_stt_service
 
 router = APIRouter(prefix="/stt", tags=["STT"])
 
@@ -15,7 +15,7 @@ async def speech_to_text_nanai(nanai_audio: str) -> BaseModelRead:
     if not nanai_audio:
         raise HTTPException(status_code=400, detail="Голосовое сообщение не может быть пустым")
     try:
-        audio_base64 = stt_service.audio_to_text(nanai_audio, "gld_Cyrl")
+        audio_base64 = get_stt_service().audio_to_text(nanai_audio, "gld_Cyrl")
 
         return JSONResponse({
             "text": audio_base64
@@ -37,7 +37,7 @@ async def speech_to_text_ru(
             tmp.write(contents)
             tmp_path = tmp.name
 
-        transcribe_audio = stt_service.audio_to_text(tmp_path)
+        transcribe_audio = get_stt_service().audio_to_text(tmp_path)
 
         return JSONResponse(
             {

@@ -1,0 +1,16 @@
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.git
+**/.github
+frontend/node_modules
+frontend/dist
+frontend/.next
+backend/backend_venv
+backend/venv
+backend/mbart/*
+!backend/mbart/loras/
+model/models
+agent-transcripts
+*.md
+!README.md

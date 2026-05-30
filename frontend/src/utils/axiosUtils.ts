@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const API_BASE = process.env.NODE_ENV === "production" ? "https://api.ai-heritage.ru" : "http://localhost:3002";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ??
+  (process.env.NODE_ENV === "production"
+    ? "https://api.ai-heritage.ru"
+    : "http://localhost:8000");
 
 export const buildTranslationUrl = (
   originalText: string,

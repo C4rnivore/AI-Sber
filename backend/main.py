@@ -11,8 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from api import api_router
 from api.translation import get_translation_service
 from api.ocr import get_ocr_service
-from backend.translation.stt import STTService
-from translation.tts import TTSService
+from translation.stt import get_stt_service
+from translation.tts import get_tts_service
 
 load_dotenv("example.env")
 
@@ -23,8 +23,8 @@ async def lifespan(app: FastAPI):
         print("Server starting")
         get_translation_service()
         get_ocr_service()
-        TTSService()
-        STTService()
+        get_tts_service()
+        get_stt_service()
         print("Server ready")
     except Exception:
         print("Server error")
