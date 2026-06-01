@@ -11,6 +11,10 @@ export default function useInstallPrompt() {
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null);
   const [canInstall, setCanInstall] = useState(false);
 
+  function isDesktop() {
+    return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  }
+
   useEffect(() => {
     const onBeforeInstall = (e: Event) => {
       e.preventDefault();
@@ -23,13 +27,15 @@ export default function useInstallPrompt() {
       setCanInstall(false);
     };
 
-    window.addEventListener("beforeinstallprompt", onBeforeInstall);
-    window.addEventListener("appinstalled", onAppInstalled);
+    if (!isDesktop()) {
+      window.addEventListener("beforeinstallprompt", onBeforeInstall);
+      window.addEventListener("appinstalled", onAppInstalled);
 
-    return () => {
-      window.removeEventListener("beforeinstallprompt", onBeforeInstall);
-      window.removeEventListener("appinstalled", onAppInstalled);
-    };
+      return () => {
+        window.removeEventListener("beforeinstallprompt", onBeforeInstall);
+        window.removeEventListener("appinstalled", onAppInstalled);
+      };
+    }
   }, []);
 
   const promptInstall = async () => {

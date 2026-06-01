@@ -263,10 +263,10 @@ export default function useTranslatorController() {
     async (audioBlob: Blob, language: "russian" | "nanai") => {
       const text = await fetchSpeechToText(audioBlob, language);
       if (text) {
-        setOriginalText(text);
+        setOriginalText(text.slice(0, 201));
       }
     },
-    [setOriginalText],
+    [setOriginalText]
   );
 
   // --- OCR ---
@@ -275,10 +275,10 @@ export default function useTranslatorController() {
     async (imageFile: File) => {
       const text = await fetchOCR(imageFile);
       if (text) {
-        setOriginalText(text);
+        setOriginalText(text.slice(0, 201));
       }
     },
-    [setOriginalText],
+    [setOriginalText]
   );
 
   // --- Favorites ---
