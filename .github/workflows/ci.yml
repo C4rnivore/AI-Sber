@@ -100,6 +100,49 @@ jobs:
         env:
           NODE_ENV: production
 
+  docker-build:
+    name: Docker Build Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: false
+          tags: ai-sber-backend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          push: false
+          tags: ai-sber-frontend:ci
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://localhost:8000
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build models-downloader image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/models-downloader/Dockerfile
+          push: false
+          tags: ai-sber-models:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   backend-test:
     name: Backend Tests
     runs-on: ubuntu-latest
