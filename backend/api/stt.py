@@ -1,10 +1,11 @@
 import tempfile
-from fastapi import HTTPException, APIRouter,UploadFile, File
+from fastapi import HTTPException, APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse
 from schemas.base import BaseModelRead
 from translation.stt import get_stt_service
 
 router = APIRouter(prefix="/stt", tags=["STT"])
+
 
 @router.get(
     "/nanai-stt",
@@ -23,6 +24,7 @@ async def speech_to_text_nanai(nanai_audio: str) -> BaseModelRead:
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post('/russian-stt')
 async def speech_to_text_ru(

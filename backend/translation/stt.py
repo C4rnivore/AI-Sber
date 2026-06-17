@@ -2,6 +2,7 @@ from transformers import WhisperProcessor, WhisperForConditionalGeneration
 import librosa
 import os
 
+
 class STTService:
     def __init__(self):
         print("Загрузка моделей STT...")

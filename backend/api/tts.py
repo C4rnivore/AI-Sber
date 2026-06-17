@@ -5,6 +5,7 @@ from translation.tts import get_tts_service
 
 router = APIRouter(prefix="/tts", tags=["TTS"])
 
+
 @router.get(
     "/nanai-tts",
     response_model=BaseModelRead,
@@ -22,6 +23,7 @@ async def text_to_speech_nanai(nanai_text: str) -> BaseModelRead:
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get(
     "/russian-tts",
