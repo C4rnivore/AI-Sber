@@ -100,35 +100,104 @@ jobs:
         env:
           NODE_ENV: production
 
+  docker-build:
+    name: Docker Build Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: false
+          tags: ai-sber-backend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          push: false
+          tags: ai-sber-frontend:ci
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://localhost:8000
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build models-downloader image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/models-downloader/Dockerfile
+          push: false
+          tags: ai-sber-models:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   backend-test:
     name: Backend Tests
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./
-    
+
     steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          docker-images: true
+          swap-storage: true
+
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
+      - name: Restore model cache
+        uses: actions/cache@v4
+        id: model-cache
+        with:
+          path: backend/mbart
+          key: mbart-v1-${{ hashFiles('backend/model_downloader.py') }}
+          restore-keys: |
+            mbart-v1-
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-asyncio httpx
-          if [ -f backend/requirements.txt ]; then
-            pip install -r backend/requirements.txt
-          fi
-          if [ -f model/requirements.txt ]; then
-            pip install -r model/requirements.txt
-          fi
-      
+          # CPU-only PyTorch (~200 MB вместо ~4 GB с CUDA) — хватает для inference в CI
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          grep -v '^torch' backend/requirements.txt > /tmp/requirements-ci.txt
+          pip install -r /tmp/requirements-ci.txt
+
+      - name: Download model weights
+        if: steps.model-cache.outputs.cache-hit != 'true'
+        working-directory: ./backend
+        env:
+          DOWNLOAD_OCR: "0"
+        run: python model_downloader.py
+
       - name: Run tests
+        env:
+          TESTING: "1"
         run: |
           pytest backend/tests.py -v
 

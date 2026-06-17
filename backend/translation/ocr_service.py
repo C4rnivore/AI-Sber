@@ -6,6 +6,7 @@ from transformers.models.lighton_ocr import LightOnOcrProcessor, LightOnOcrForCo
 class OCRService:
     MAX_LENGTH = 2048
     LONGEST_EDGE = 1024
+
     def __init__(self, model_path: str):
         self.device = (
             "cuda"

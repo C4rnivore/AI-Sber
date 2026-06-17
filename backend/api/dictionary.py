@@ -1,6 +1,6 @@
 import json
-import os
 import re
+from pathlib import Path
 from typing import Dict, List
 
 from fastapi import APIRouter
@@ -10,13 +10,22 @@ from schemas.base import SentenceResponse, TranslationResponse
 
 router = APIRouter(prefix="/dictionary", tags=["Dictionary"])
 
-DICTIONARY_FILE = "../model/finetuning/datasets/all_dicts.json"
-SENTENCES_FILE = "../model/finetuning/datasets/aug_17_11.json"
+
+def _datasets_dir() -> Path:
+    """Путь к датасетам: из корня репозитория или /model в Docker."""
+    candidates = [
+        Path(__file__).resolve().parent.parent.parent / "model" / "finetuning" / "datasets",
+        Path("/model/finetuning/datasets"),
+    ]
+    for path in candidates:
+        if path.is_dir():
+            return path
+    return candidates[0]
 
 
-def load_json(file: str) -> List[Dict[str, str]]:
+def load_json(file: Path) -> List[Dict[str, str]]:
     """Load and validate JSON file."""
-    if not os.path.exists(file):
+    if not file.exists():
         raise RuntimeError(f"Файл {file} не найден")
     with open(file, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -27,8 +36,9 @@ def load_json(file: str) -> List[Dict[str, str]]:
     return data
 
 
-dictionary = load_json(DICTIONARY_FILE)
-sentences = load_json(SENTENCES_FILE)
+_datasets = _datasets_dir()
+dictionary = load_json(_datasets / "all_dicts.json")
+sentences = load_json(_datasets / "aug_17_11.json")
 
 
 @router.get(

@@ -1,5 +1,5 @@
 from pathlib import Path
-from fastapi import HTTPException, APIRouter,UploadFile, File
+from fastapi import HTTPException, APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse
 from PIL import Image
 from io import BytesIO
@@ -9,6 +9,7 @@ from translation.ocr_service import OCRService
 router = APIRouter(prefix="/ocr", tags=["OCR"])
 
 _ocr_service: Optional[OCRService] = None
+
 
 def get_ocr_service() -> OCRService:
     global _ocr_service
@@ -26,6 +27,7 @@ def get_ocr_service() -> OCRService:
         print("✅ OCRService инициализирован")
 
     return _ocr_service
+
 
 @router.post('/ocr')
 async def ocr(

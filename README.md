@@ -4,6 +4,7 @@
 - [Требуемый результат](#требуемый-результат)
 - [Структура проекта](#структура-проекта)
 - [Запуск проекта](#запуск-проекта)
+- [Запуск в Docker](#запуск-в-docker)
 
 # AI-Sber
 «Цифровой хранитель: AI для сохранения и изучения малых языков России»
@@ -41,3 +42,52 @@
 1. ```bun run i```  
 2. ```bun run dev``` (для разработки)  
 3. ```bun run build``` (для сборки)
+
+## Запуск в Docker
+
+### Требования
+
+- [Docker](https://docs.docker.com/get-docker/) 24+
+- [Docker Compose](https://docs.docker.com/compose/install/) v2
+
+### Сборка и запуск (из исходников)
+
+Из корня репозитория:
+
+```bash
+# опционально: токен Hugging Face для моделей, скачиваемых не из Google Drive
+cp .env.example .env
+
+docker compose build
+docker compose up -d
+```
+
+При первом запуске контейнер `models` скачает веса моделей из Google Drive (может занять несколько минут).
+
+После готовности сервисов:
+
+- фронтенд: http://localhost:3000
+- API (Swagger): http://localhost:8000/docs
+
+### Режим разработки в Docker
+
+Hot-reload для backend и frontend:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
+### Запуск из образов Docker Hub
+
+Образы публикуются в Docker Hub:
+
+- `artemdash/ai-sber-backend`
+- `artemdash/ai-sber-frontend`
+- `artemdash/ai-sber-models`
+
+Запуск без локальной сборки:
+
+```bash
+export DOCKERHUB_USERNAME=artemdash
+docker compose -f docker-compose.yml -f docker-compose.hub.yml up -d
+```

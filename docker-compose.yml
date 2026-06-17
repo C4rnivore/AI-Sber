@@ -1,0 +1,57 @@
+services:
+  models:
+    build:
+      context: .
+      dockerfile: docker/models-downloader/Dockerfile
+    container_name: ai-sber-models
+    command: python model_downloader.py
+    volumes:
+      - models-data:/models
+    environment:
+      MBART_PATH: /models/mbart
+      OCR_PATH: /models/ocr
+    restart: "no"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: ai-sber-backend
+    depends_on:
+      models:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    volumes:
+      - models-data:/models:ro
+      - hf-cache:/root/.cache/huggingface
+    environment:
+      DEV_HOST: 0.0.0.0
+      DEV_PORT: "8000"
+      HUGGING_FACE_API_TOKEN: ${HUGGING_FACE_API_TOKEN:-}
+      HF_TOKEN: ${HUGGING_FACE_API_TOKEN:-}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/docs')"]
+      interval: 30s
+      timeout: 15s
+      retries: 10
+      start_period: 900s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    container_name: ai-sber-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+
+volumes:
+  models-data:
+  hf-cache:

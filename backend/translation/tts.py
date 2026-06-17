@@ -41,4 +41,12 @@ class TTSService:
 
         return audio_base64
 
-tts_service = TTSService()
+
+_tts_service: TTSService | None = None
+
+
+def get_tts_service() -> TTSService:
+    global _tts_service
+    if _tts_service is None:
+        _tts_service = TTSService()
+    return _tts_service
