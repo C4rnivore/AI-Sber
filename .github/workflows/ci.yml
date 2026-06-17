@@ -128,7 +128,13 @@ jobs:
             pip install -r model/requirements.txt
           fi
       
+      - name: Download model weights
+        working-directory: ./backend
+        run: python model_downloader.py
+
       - name: Run tests
+        env:
+          TESTING: "1"
         run: |
           pytest backend/tests.py -v
 

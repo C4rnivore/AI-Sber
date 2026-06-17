@@ -19,6 +19,9 @@ load_dotenv("example.env")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    if os.getenv("TESTING"):
+        yield
+        return
     try:
         print("Server starting")
         get_translation_service()
