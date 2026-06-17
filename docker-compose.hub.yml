@@ -1,0 +1,15 @@
+# Запуск из образов Docker Hub (без локальной сборки):
+#   DOCKERHUB_USERNAME=your-username docker compose -f docker-compose.yml -f docker-compose.hub.yml up -d
+
+services:
+  models:
+    image: ${DOCKERHUB_USERNAME}/ai-sber-models:latest
+    build: !reset null
+
+  backend:
+    image: ${DOCKERHUB_USERNAME}/ai-sber-backend:latest
+    build: !reset null
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME}/ai-sber-frontend:latest
+    build: !reset null
