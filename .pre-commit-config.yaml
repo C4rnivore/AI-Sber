@@ -1,0 +1,38 @@
+# Включение: pip install pre-commit && pre-commit install
+minimum_pre_commit_version: "3.2.0"
+default_stages: [pre-commit]
+
+repos:
+  - repo: https://github.com/psf/black
+    rev: 26.5.1
+    hooks:
+      - id: black
+        name: black (backend)
+        # Длина строки как в setup.cfg (flake8 max-line-length).
+        args: ["--line-length=100"]
+        files: ^backend/.+\.py$
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+        name: flake8 (backend)
+        args: ["--config=setup.cfg"]
+        files: ^backend/.+\.py$
+
+  - repo: local
+    hooks:
+      - id: frontend-eslint
+        name: eslint (frontend)
+        entry: bun scripts/precommit-frontend.mjs eslint
+        language: system
+        files: ^frontend/.+\.(js|jsx|mjs|cjs|ts|tsx)$
+        exclude: ^frontend/(node_modules|\.next|out|build)/
+
+      - id: frontend-tsc
+        name: tsc (frontend)
+        entry: bun scripts/precommit-frontend.mjs tsc
+        language: system
+        pass_filenames: false
+        files: ^frontend/.+\.(ts|tsx)$|^frontend/tsconfig.*\.json$
+        exclude: ^frontend/(node_modules|\.next|out|build)/

@@ -43,6 +43,13 @@
 2. ```bun run dev``` (для разработки)  
 3. ```bun run build``` (для сборки)
 
+Проверки перед коммитом (flake8 и black для backend, ESLint и `tsc` для frontend):
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
 ## Запуск в Docker
 
 ### Требования
