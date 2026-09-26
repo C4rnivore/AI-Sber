@@ -4,3 +4,4 @@ backend_venv/
 mbart/*
 !mbart/loras/
 venv/
+.venv/

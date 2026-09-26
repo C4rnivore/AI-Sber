@@ -1,0 +1,26 @@
+[project]
+name = "ai-sber-model"
+version = "1.0.0"
+description = "Обучение и файнтюнинг переводческой модели"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "accelerate (==1.11.0)",
+    "datasets (>=3.0)",
+    "huggingface-hub (==0.36.0)",
+    "nltk (>=3.9)",
+    "numpy (==2.3.4)",
+    "peft (==0.17.1)",
+    "pymorphy3 (>=2.0)",
+    "python-dotenv (==1.2.1)",
+    "pyyaml (==6.0.3)",
+    "torch (==2.9.0)",
+    "transformers (==4.57.1)",
+]
+
+[tool.poetry]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

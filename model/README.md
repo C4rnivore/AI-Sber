@@ -1,3 +1,12 @@
+# Установка
+
+Отдельный проект Poetry, не общий с `backend/`:
+
+```bash
+poetry install
+poetry run python -m finetuning.finetune
+```
+
 # 1. Основные директории
 
 - **`finetuning/`** — основной код для обучения и файнтюнинга модели.  

@@ -2,15 +2,16 @@ FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 
-# Без apt-get: в Docker-сборке deb.debian.org часто недоступен (VPN/фаервол).
-# libsndfile поставляется внутри wheels пакета soundfile (зависимость librosa).
+ENV POETRY_VERSION=2.5.1 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_NO_INTERACTION=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
-COPY backend/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir "poetry==${POETRY_VERSION}"
 
-# CPU-only PyTorch (~200 MB instead of ~4 GB with CUDA) — достаточно для inference без GPU
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu \
-    && sed '/^torch/d' requirements.txt > requirements.docker.txt \
-    && pip install --no-cache-dir -r requirements.docker.txt
+COPY backend/pyproject.toml backend/poetry.lock ./
+
+RUN poetry install --no-root --only main
 
 COPY backend/ .
 COPY model/finetuning/datasets /model/finetuning/datasets

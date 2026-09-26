@@ -1,9 +1,9 @@
 # Запуск
 
-- Создать вирутальное окружение **`python -m venv <venv_name>`**
-- Активировать его **`<venv_name>/Scripts/activate`**
-- Установить зависимости **`pip install -r requirements.txt`**
-- Запуск **`python main.py`**
+- Установить [Poetry](https://python-poetry.org/docs/#installation) 2.5
+- Установить зависимости **`poetry install`** (окружение создаётся в `.venv`)
+- Запуск **`poetry run python main.py`**
+- Тесты: **`poetry install --with dev`**, затем **`poetry run pytest`**
 
 ## Возможные ошибки:
 

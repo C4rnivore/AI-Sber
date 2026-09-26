@@ -30,11 +30,12 @@
 
 ## Запуск проекта
 
-Запуск backend:
+Запуск backend из каталога `backend/`:
 
-1. ```pip install -r requirements.txt ``` 
-2. ```python model_downloader.py``` (если файлы модели еще не скачаны)  
-3. ```python main.py```  
+1. Установить [Poetry](https://python-poetry.org/docs/#installation) 2.5
+2. ```poetry install```
+3. ```poetry run python model_downloader.py``` (если файлы модели еще не скачаны)
+4. ```poetry run python main.py```  
 
 Запуск frontend:
 
@@ -42,6 +43,11 @@
 1. ```bun run i```  
 2. ```bun run dev``` (для разработки)  
 3. ```bun run build``` (для сборки)
+
+Обучение модели из каталога `model/` (отдельное окружение, в контейнер сервиса не входит):
+
+1. ```poetry install```
+2. ```poetry run python -m finetuning.finetune```
 
 Проверки перед коммитом (flake8 и black для backend, ESLint и `tsc` для frontend):
 

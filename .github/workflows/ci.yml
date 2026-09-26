@@ -54,9 +54,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8 black mypy types-requests fastapi starlette pydantic
-          if [ -f model/requirements.txt ]; then
-            pip install -r model/requirements.txt
-          fi
       
       - name: Check code formatting with black
         run: |
@@ -164,11 +161,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install Poetry
+        run: pipx install poetry==2.5.1
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
+          cache: poetry
+          cache-dependency-path: backend/poetry.lock
 
       - name: Restore model cache
         uses: actions/cache@v4
@@ -180,24 +181,19 @@ jobs:
             mbart-v1-
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio httpx
-          # CPU-only PyTorch (~200 MB вместо ~4 GB с CUDA) — хватает для inference в CI
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
-          grep -v '^torch' backend/requirements.txt > /tmp/requirements-ci.txt
-          pip install -r /tmp/requirements-ci.txt
+        working-directory: backend
+        run: poetry install --no-interaction --no-root --with dev
 
       - name: Download model weights
         if: steps.model-cache.outputs.cache-hit != 'true'
         working-directory: ./backend
         env:
           DOWNLOAD_OCR: "0"
-        run: python model_downloader.py
+        run: poetry run python model_downloader.py
 
       - name: Run tests
+        working-directory: ./backend
         env:
           TESTING: "1"
-        run: |
-          pytest backend/tests.py -v
+        run: poetry run pytest tests.py -v
 

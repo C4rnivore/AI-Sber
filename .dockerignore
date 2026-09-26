@@ -8,6 +8,8 @@ frontend/dist
 frontend/.next
 backend/backend_venv
 backend/venv
+backend/.venv
+model/.venv
 backend/mbart/*
 !backend/mbart/loras/
 model/models

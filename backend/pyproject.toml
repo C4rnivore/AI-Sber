@@ -1,0 +1,43 @@
+[project]
+name = "ai-sber-backend"
+version = "1.0.0"
+description = "AI-Sber"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "fastapi (==0.123.0)",
+    "gdown (>=5.2.0)",
+    "huggingface-hub (>=1.5.0,<2.0)",
+    "librosa (>=0.10.0)",
+    "numpy (>=1.26.0,<3.0.0)",
+    "peft (==0.19.1)",
+    "pillow (>=10.0.0)",
+    "python-dotenv (==1.2.1)",
+    "python-multipart (>=0.0.9)",
+    "scipy (>=1.11.0)",
+    "torch (>=2.8.0,<2.10.0)",
+    "transformers (==5.7.0)",
+    "uvicorn (==0.38.0)",
+]
+
+[dependency-groups]
+dev = [
+    "httpx (==0.28.1)",
+    "pytest (>=8.0)",
+    "pytest-asyncio (>=0.24)",
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.dependencies]
+torch = { source = "pytorch-cpu" }
+
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
